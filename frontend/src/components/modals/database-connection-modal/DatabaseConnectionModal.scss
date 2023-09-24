@@ -1,0 +1,20 @@
+.database-connection-modal {
+  &__database {
+    @apply ml-[-12px] mt-8px;
+  }
+
+  &__radio {
+    @apply flex items-center;
+  }
+
+  &__fields {
+    @apply my-8px;
+    @apply flex flex-col gap-8px;
+    @apply w-full;
+  }
+
+  &__buttons {
+    @apply mt-16px;
+    @apply flex justify-between;
+  }
+}
