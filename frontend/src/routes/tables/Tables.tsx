@@ -42,7 +42,7 @@ const Tables = () => {
       <List>
         {tablesMock.map((table) => (
           <ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate(`/tables/${table.name}`)}>
               <Typography>{table.name}</Typography>
             </ListItemButton>
           </ListItem>
