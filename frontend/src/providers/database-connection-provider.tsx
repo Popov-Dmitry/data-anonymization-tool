@@ -25,9 +25,9 @@ const DatabaseConnectionStateContext = React.createContext<
 
 export function DatabaseConnectionProvider(props: Props) {
   const { children } = props;
-  const [database, setDatabase] = useState<string>("");
-  const [server, setServer] = useState<string>("");
-  const [port, setPort] = useState<string>("");
+  const [database, setDatabase] = useState<string>("postgresql");
+  const [server, setServer] = useState<string>("localhost");
+  const [port, setPort] = useState<string>("5432");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [databaseName, setDatabaseName] = useState<string>("");

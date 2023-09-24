@@ -4,11 +4,12 @@ import NotFound from "./routes/not-found/NotFound";
 import Home from "./routes/home/Home";
 import Tables from "./routes/tables/Tables";
 import Table from "./routes/table/Table";
+import Header from "./components/header/Header";
 
 export default function Router() {
   return (
     <BrowserRouter>
-      {/*<Header />*/}
+      <Header />
       <main className="max-w-1200px m-auto">
         <Suspense fallback={null}>
           <Routes>

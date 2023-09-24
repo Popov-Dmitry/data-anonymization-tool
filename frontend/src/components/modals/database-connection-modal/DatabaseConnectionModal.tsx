@@ -43,15 +43,24 @@ const DatabaseConnectionModal = ({
   onConnect,
   className = ""
 }: IImportDataModalData) => {
-  const { updateDatabaseConnectionData, setIsConnected } = useDatabaseConnection();
+  const {
+    database,
+    server,
+    port,
+    username,
+    password,
+    databaseName,
+    updateDatabaseConnectionData,
+    setIsConnected
+  } = useDatabaseConnection();
   const databaseForm = useFormik({
     initialValues: {
-      database: "postgresql",
-      server: "localhost",
-      port: "5432",
-      username: "",
-      password: "",
-      databaseName: ""
+      database,
+      server,
+      port,
+      username,
+      password,
+      databaseName
     },
     onSubmit: (values, actions) => {
       updateDatabaseConnectionData(values);
