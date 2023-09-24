@@ -1,6 +1,6 @@
 import "./NotFound.scss";
-import React from 'react';
-import {bemElement} from "../../utils/bem-class-names";
+import React from "react";
+import { bemElement } from "../../utils/bem-class-names";
 
 const baseClassName = "not-found-page";
 const bem = bemElement(baseClassName);

@@ -1,25 +1,33 @@
 import "./DatabaseConnectionModal.scss";
-import React from 'react';
-import {Box, Button, Input, Modal, Radio, RadioGroup, Typography} from "@mui/material";
-import {bemElement} from "../../../utils/bem-class-names";
-import {useFormik} from "formik";
-import {joinClassNames} from "../../../utils/join-class-names";
-import {useDatabaseConnection} from "../../../providers/database-connection-provider";
+import React from "react";
+import {
+  Box,
+  Button,
+  Input,
+  Modal,
+  Radio,
+  RadioGroup,
+  Typography
+} from "@mui/material";
+import { bemElement } from "../../../utils/bem-class-names";
+import { useFormik } from "formik";
+import { joinClassNames } from "../../../utils/join-class-names";
+import { useDatabaseConnection } from "../../../providers/database-connection-provider";
 
 const baseClassName = "database-connection-modal";
 const bem = bemElement(baseClassName);
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: 'none',
+  bgcolor: "background.paper",
+  border: "none",
   borderRadius: 2,
   boxShadow: 24,
-  p: 4,
+  p: 4
 };
 
 interface IImportDataModalData {
@@ -29,7 +37,12 @@ interface IImportDataModalData {
   className?: string;
 }
 
-const DatabaseConnectionModal = ({ show, onHide, onConnect, className = "" }: IImportDataModalData) => {
+const DatabaseConnectionModal = ({
+  show,
+  onHide,
+  onConnect,
+  className = ""
+}: IImportDataModalData) => {
   const { updateDatabaseConnectionData, setIsConnected } = useDatabaseConnection();
   const databaseForm = useFormik({
     initialValues: {
@@ -38,24 +51,29 @@ const DatabaseConnectionModal = ({ show, onHide, onConnect, className = "" }: II
       port: "5432",
       username: "",
       password: "",
-      databaseName: "",
+      databaseName: ""
     },
     onSubmit: (values, actions) => {
       updateDatabaseConnectionData(values);
       setIsConnected(true);
       onConnect && onConnect();
-    },
+    }
   });
 
-  const isFormEmpty = databaseForm.values.database.length === 0
-    || databaseForm.values.server.length === 0
-    || databaseForm.values.port.length === 0
-    || databaseForm.values.username.length === 0
-    || databaseForm.values.password.length === 0
-    || databaseForm.values.databaseName.length === 0;
+  const isFormEmpty =
+    databaseForm.values.database.length === 0 ||
+    databaseForm.values.server.length === 0 ||
+    databaseForm.values.port.length === 0 ||
+    databaseForm.values.username.length === 0 ||
+    databaseForm.values.password.length === 0 ||
+    databaseForm.values.databaseName.length === 0;
 
   return (
-    <Modal open={show} onClose={onHide} className={joinClassNames(baseClassName, className)}>
+    <Modal
+      open={show}
+      onClose={onHide}
+      className={joinClassNames(baseClassName, className)}
+    >
       <Box sx={style}>
         <Typography variant="h6">Подключение к базе данных</Typography>
         <RadioGroup row className={bem("database")}>
@@ -112,11 +130,7 @@ const DatabaseConnectionModal = ({ show, onHide, onConnect, className = "" }: II
           </div>
         </div>
         <div className={bem("buttons")}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={onHide}
-          >
+          <Button variant="outlined" color="secondary" onClick={onHide}>
             Отмена
           </Button>
           <Button

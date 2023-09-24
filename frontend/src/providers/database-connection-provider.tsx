@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 
 interface DatabaseConnectionData {
   database: string;
@@ -24,7 +24,7 @@ const DatabaseConnectionStateContext = React.createContext<
 >(undefined);
 
 export function DatabaseConnectionProvider(props: Props) {
-  const {children} = props;
+  const { children } = props;
   const [database, setDatabase] = useState<string>("");
   const [server, setServer] = useState<string>("");
   const [port, setPort] = useState<string>("");
@@ -33,14 +33,17 @@ export function DatabaseConnectionProvider(props: Props) {
   const [databaseName, setDatabaseName] = useState<string>("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const updateDatabaseConnectionData = useCallback((value: DatabaseConnectionData) => {
-    setDatabase(value.database);
-    setServer(value.server);
-    setPort(value.port);
-    setUsername(value.username);
-    setPassword(value.password);
-    setDatabaseName(value.databaseName);
-  }, []);
+  const updateDatabaseConnectionData = useCallback(
+    (value: DatabaseConnectionData) => {
+      setDatabase(value.database);
+      setServer(value.server);
+      setPort(value.port);
+      setUsername(value.username);
+      setPassword(value.password);
+      setDatabaseName(value.databaseName);
+    },
+    []
+  );
 
   return (
     <DatabaseConnectionStateContext.Provider

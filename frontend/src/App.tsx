@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import Router from "./router";
-import {DatabaseConnectionProvider} from "./providers/database-connection-provider";
+import { DatabaseConnectionProvider } from "./providers/database-connection-provider";
 
 function App() {
   return (

@@ -1,10 +1,10 @@
 import "./Home.scss";
-import React, {useState} from 'react';
-import {Button} from "@mui/material";
-import {bemElement} from "../../utils/bem-class-names";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import { bemElement } from "../../utils/bem-class-names";
 import DatabaseConnectionModal from "../../components/modals/database-connection-modal/DatabaseConnectionModal";
-import {useDatabaseConnection} from "../../providers/database-connection-provider";
-import {useNavigate} from "react-router-dom";
+import { useDatabaseConnection } from "../../providers/database-connection-provider";
+import { useNavigate } from "react-router-dom";
 
 const baseClassName = "home-page";
 const bem = bemElement(baseClassName);

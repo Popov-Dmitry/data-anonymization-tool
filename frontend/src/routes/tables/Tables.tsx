@@ -1,9 +1,9 @@
 import "./Tables.scss";
-import React from 'react';
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import {List, ListItem, ListItemButton, Typography} from "@mui/material";
-import {useDatabaseConnection} from "../../providers/database-connection-provider";
-import {bemElement} from "../../utils/bem-class-names";
+import { List, ListItem, ListItemButton, Typography } from "@mui/material";
+import { useDatabaseConnection } from "../../providers/database-connection-provider";
+import { bemElement } from "../../utils/bem-class-names";
 
 const baseClassName = "tables-page";
 const bem = bemElement(baseClassName);
@@ -43,9 +43,7 @@ const Tables = () => {
         {tablesMock.map((table) => (
           <ListItem>
             <ListItemButton>
-              <Typography>
-                {table.name}
-              </Typography>
+              <Typography>{table.name}</Typography>
             </ListItemButton>
           </ListItem>
         ))}
