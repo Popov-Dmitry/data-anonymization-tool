@@ -4,6 +4,7 @@ import {Box, Button, Input, Modal, Radio, RadioGroup, Typography} from "@mui/mat
 import {bemElement} from "../../../utils/bem-class-names";
 import {useFormik} from "formik";
 import {joinClassNames} from "../../../utils/join-class-names";
+import {useDatabaseConnection} from "../../../providers/database-connection-provider";
 
 const baseClassName = "database-connection-modal";
 const bem = bemElement(baseClassName);
@@ -24,10 +25,12 @@ const style = {
 interface IImportDataModalData {
   show: boolean;
   onHide: () => void;
+  onConnect?: () => void;
   className?: string;
 }
 
-const DatabaseConnectionModal = ({ show, onHide, className = "" }: IImportDataModalData) => {
+const DatabaseConnectionModal = ({ show, onHide, onConnect, className = "" }: IImportDataModalData) => {
+  const { updateDatabaseConnectionData, setIsConnected } = useDatabaseConnection();
   const databaseForm = useFormik({
     initialValues: {
       database: "postgresql",
@@ -38,7 +41,9 @@ const DatabaseConnectionModal = ({ show, onHide, className = "" }: IImportDataMo
       databaseName: "",
     },
     onSubmit: (values, actions) => {
-
+      updateDatabaseConnectionData(values);
+      setIsConnected(true);
+      onConnect && onConnect();
     },
   });
 
@@ -118,6 +123,8 @@ const DatabaseConnectionModal = ({ show, onHide, className = "" }: IImportDataMo
             variant="contained"
             sx={{ width: 200 }}
             disabled={isFormEmpty}
+            // TODO
+            onClick={databaseForm.submitForm}
           >
             Далее
           </Button>
