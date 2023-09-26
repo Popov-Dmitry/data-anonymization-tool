@@ -2,12 +2,13 @@ package ru.anontmization.dataanonymizationtool.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.anontmization.dataanonymizationtool.Methods.options.type.Shuffle;
-import ru.anontmization.dataanonymizationtool.Methods.options.type.ValueReplacement;
-import ru.anontmization.dataanonymizationtool.dto.mask.ShuffleDto;
-import ru.anontmization.dataanonymizationtool.dto.mask.ValueReplacementDto;
+import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
+import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
+import ru.anontmization.dataanonymizationtool.dto.mask.*;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 import ru.anontmization.dataanonymizationtool.services.DepersonalizationService;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/v1/mask")
@@ -22,15 +23,16 @@ public class DepersonalizationController {
         return service.getMethods();
     }
 
-    @GetMapping("/method/Shuffle")
-    public void setShuffle(@RequestBody ShuffleDto request){
-        service.addMethod(request.getId(), new Shuffle(request.getNameTable(), request.getNamesColumn()));
+    @GetMapping("/config")
+    public String getConfig(){
+        return service.getConfig();
     }
 
-    @GetMapping("/method/ValueReplacement")
-    public void setValueReplacement(@RequestBody ValueReplacementDto request){
-        service.addMethod(request.getId(), new ValueReplacement(request.getNameTable(), request.getNameColumn(), request.getValue()));
+    @PostMapping("/config")
+    public void setConfig(@RequestBody String request){
+        service.setConfig(request);
     }
+
 
     @GetMapping("/start")
     public String startMasking(){

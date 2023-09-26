@@ -46,4 +46,12 @@ public class Round implements MaskItem {
         );
     }
 
+    @Override
+    public String toString() {
+        return "Round{" +
+                "nameTable='" + nameTable + '\'' +
+                ", nameColumn='" + nameColumn + '\'' +
+                ", precision=" + precision +
+                '}';
+    }
 }
