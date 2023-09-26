@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -9,23 +11,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+@Data
+@NoArgsConstructor
 public class Identifier implements MaskItem {
-    private final String nameTable;
-    private final String[] namesColumn;
-    private final String newNameTable;
-
-    public Identifier(String nameTable, String[] namesColumn, String newNameTable) {
-        this.nameTable = nameTable;
-        this.namesColumn = namesColumn;
-        this.newNameTable = newNameTable;
-    }
+    private String nameTable;
+    private String[] namesColumn;
+    private String newNameTable;
 
     @Override
     public String getTable() {
         return nameTable;
     }
 
-    private static String convertStringArrayToString(String[] strArr, String idTable) {
+    private String convertStringArrayToString(String[] strArr, String idTable) {
         StringBuilder sb = new StringBuilder();
         for (String str : strArr)
             sb.append(str).append(",");
@@ -89,7 +87,7 @@ public class Identifier implements MaskItem {
         );
     }
 
-    private static String bytesToHex(byte[] hash) {
+    private String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);

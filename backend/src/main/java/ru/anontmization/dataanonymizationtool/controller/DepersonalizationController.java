@@ -23,11 +23,6 @@ public class DepersonalizationController {
         return service.getMethods();
     }
 
-    @GetMapping("/config")
-    public String getConfig(){
-        return service.getConfig();
-    }
-
     @PostMapping("/config")
     public void setConfig(@RequestBody String request){
         service.setConfig(request);
@@ -37,15 +32,19 @@ public class DepersonalizationController {
     @GetMapping("/start")
     public String startMasking(){
         if(controllerService.checkConnection()){
-            service.start();
-            return "start";
+            return service.start();
         }
-        return "error";
+        return "{\"error\" : \"connection\"}";
     }
 
     @GetMapping("/clear")
     public void clearMasking(){
         service.clear();
+    }
+
+    @GetMapping("/status")
+    public String getStatus(){
+        return service.getStatus();
     }
 
     @GetMapping("/check")

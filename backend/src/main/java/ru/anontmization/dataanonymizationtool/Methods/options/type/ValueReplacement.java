@@ -1,22 +1,21 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class ValueReplacement implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final Object value;
+    private String nameTable;
+    private String nameColumn;
+    private Object value;
 
-    public ValueReplacement(String nameTable, String nameColumn, Object value) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.value = value;
-    }
 
     @Override
     public String getTable() {
@@ -41,14 +40,4 @@ public class ValueReplacement implements MaskItem {
                 "ALTER TABLE "+nameTable+" DROP COLUMN masking_method_temp_id;"
         );
     }
-
-    @Override
-    public String toString() {
-        return "ValueReplacement{" +
-                "nameTable='" + nameTable + '\'' +
-                ", nameColumn='" + nameColumn + '\'' +
-                ", value=" + value +
-                '}';
-    }
-
 }

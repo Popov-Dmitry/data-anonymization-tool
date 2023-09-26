@@ -1,5 +1,8 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -8,20 +11,17 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Random;
 
+@Data
+@NoArgsConstructor
 public class Shuffle implements MaskItem{
-    private final String nameTable;
-    private final String[] namesColumn;
-
-    public Shuffle(String nameTable, String[] namesColumn) {
-        this.nameTable = nameTable;
-        this.namesColumn = namesColumn;
-    }
+    private String nameTable;
+    private String[] namesColumn;
 
     @Override
     public String getTable() {
         return nameTable;
     }
-    private static String convertStringArrayToString(String[] strArr, String delimiter) {
+    private String convertStringArrayToString(String[] strArr, String delimiter) {
         StringBuilder sb = new StringBuilder();
         for (String str : strArr)
             sb.append(str).append(delimiter);
@@ -68,13 +68,5 @@ public class Shuffle implements MaskItem{
         controllerDB.getStatement().execute(
                 "ALTER TABLE "+nameTable+" DROP COLUMN masking_id_for_shuffle;"
         );
-    }
-
-    @Override
-    public String toString() {
-        return "Shuffle{" +
-                "nameTable='" + nameTable + '\'' +
-                ", namesColumn=" + Arrays.toString(namesColumn) +
-                '}';
     }
 }

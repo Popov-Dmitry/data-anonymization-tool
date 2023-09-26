@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -7,25 +9,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+@Data
+@NoArgsConstructor
 public class MicroAggregationBySingleAxis implements MaskItem {
-    private final String nameTable;
-    private final int k;
-    private final String axisColumn;
-    private final String[] namesColumn;
-
-    public MicroAggregationBySingleAxis(String nameTable, int k, String axisColumn, String[] namesColumn) {
-        this.nameTable = nameTable;
-        this.k = k;
-        this.axisColumn = axisColumn;
-        this.namesColumn = namesColumn;
-    }
+    private String nameTable;
+    private int k;
+    private String axisColumn;
+    private String[] namesColumn;
 
     @Override
     public String getTable() {
         return nameTable;
     }
 
-    private static String convertStringArrayToString(String[] strArr, String delimiter) {
+    private String convertStringArrayToString(String[] strArr, String delimiter) {
         StringBuilder sb = new StringBuilder();
         for (String str : strArr)
             sb.append(str).append(delimiter);

@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -7,16 +9,12 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class DateAging implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final int countDays;
-
-    public DateAging(String nameTable, String nameColumn, int countDays) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.countDays = countDays;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private int countDays;
 
     @Override
     public String getTable() {

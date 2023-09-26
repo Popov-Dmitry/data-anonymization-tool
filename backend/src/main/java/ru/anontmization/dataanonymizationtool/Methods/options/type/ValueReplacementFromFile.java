@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -12,16 +14,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
+@Data
+@NoArgsConstructor
 public class ValueReplacementFromFile implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final String nameFile;
-
-    public ValueReplacementFromFile(String nameTable, String nameColumn, String nameFile) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.nameFile = nameFile;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private String nameFile;
 
     @Override
     public String getTable() {

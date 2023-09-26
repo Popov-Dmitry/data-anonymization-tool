@@ -1,29 +1,23 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Data
+@NoArgsConstructor
 public class GeneralizationValue implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final String generalizationTable;
-    private final ArrayList<String> generalizationName;
-    private final ArrayList<?> minValue;
-    private final ArrayList<?> maxValue;
-    private final boolean isDate;
-
-    public GeneralizationValue(String nameTable, String nameColumn, String generalizationTable, ArrayList<String> generalizationName, ArrayList<?> minValue, ArrayList<?> maxValue, boolean isDate) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.generalizationTable = generalizationTable;
-        this.generalizationName = generalizationName;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
-        this.isDate = isDate;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private String generalizationTable;
+    private ArrayList<String> generalizationName;
+    private ArrayList<?> minValue;
+    private ArrayList<?> maxValue;
+    private boolean isDate;
 
     @Override
     public String getTable() {

@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
@@ -8,11 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
+@Data
+@NoArgsConstructor
 public class ValueVariance implements MaskItem{
-    private final String nameTable;
-    private final String nameColumn;
-    private final int percent;
-    private final DataType dataType;
+    private String nameTable;
+    private String nameColumn;
+    private int percent;
+    private DataType dataType;
 
     public enum DataType{
         INTEGER, FLOAT, DOUBLE, DATE
@@ -23,12 +27,6 @@ public class ValueVariance implements MaskItem{
         return nameTable;
     }
 
-    public ValueVariance(String nameTable, String nameColumn, int percent, DataType dataType) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.percent = percent;
-        this.dataType = dataType;
-    }
     @Override
     public void start(ControllerDataBaseService controllerDB) throws SQLException {
         controllerDB.getStatement().execute(

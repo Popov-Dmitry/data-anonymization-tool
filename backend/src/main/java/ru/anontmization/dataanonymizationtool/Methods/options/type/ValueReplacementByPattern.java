@@ -1,23 +1,20 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class ValueReplacementByPattern implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final String regex;
-    private final String replacement;
-
-    public ValueReplacementByPattern(String nameTable, String nameColumn, String regex, String replacement) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.regex = regex;
-        this.replacement = replacement;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private String regex;
+    private String replacement;
 
     @Override
     public String getTable() {

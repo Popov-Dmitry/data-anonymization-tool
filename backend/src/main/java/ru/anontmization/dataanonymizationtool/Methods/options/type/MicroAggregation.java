@@ -1,15 +1,19 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class MicroAggregation implements MaskItem {
-    private final String nameTable;
-    private final String[] namesColumn;
-    private final int k;
+    private String nameTable;
+    private String[] namesColumn;
+    private int k;
 
 
     private static final String nameFieldIsChange = "is_change_for_micro_aggregation";
@@ -18,24 +22,18 @@ public class MicroAggregation implements MaskItem {
     private String columnsRow;
     private String columnsRowCount;
 
-    public MicroAggregation(String nameTable, String[] namesColumn, int k) {
-        this.nameTable = nameTable;
-        this.namesColumn = namesColumn;
-        this.k = k;
-    }
-
     @Override
     public String getTable() {
         return nameTable;
     }
 
-    private static String convertStringArrayToString(String[] strArr) {
+    private String convertStringArrayToString(String[] strArr) {
         StringBuilder sb = new StringBuilder();
         for (String str : strArr)
             sb.append(str).append(",");
         return sb.substring(0, sb.length() - 1);
     }
-    private static String convertStringArrayToStringWithAVG(String[] strArr) {
+    private String convertStringArrayToStringWithAVG(String[] strArr) {
         StringBuilder sb = new StringBuilder();
         for (String str : strArr)
             sb.append("AVG(").append(str).append("),");
@@ -191,7 +189,5 @@ public class MicroAggregation implements MaskItem {
         controllerDB.getStatement().execute(
                 "ALTER TABLE "+nameTable+" DROP COLUMN "+nameFieldIsChange+";"
         );
-
-
     }
 }

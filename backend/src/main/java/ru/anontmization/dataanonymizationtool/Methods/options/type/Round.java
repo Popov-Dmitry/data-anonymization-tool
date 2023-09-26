@@ -1,21 +1,19 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class Round implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final int precision;
-
-    public Round(String nameTable, String nameColumn, int precision) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.precision = precision;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private int precision;
 
     @Override
     public String getTable() {
@@ -44,14 +42,5 @@ public class Round implements MaskItem {
         controllerDB.getStatement().execute(
                 "ALTER TABLE "+nameTable+" DROP COLUMN masking_method_temp_id;"
         );
-    }
-
-    @Override
-    public String toString() {
-        return "Round{" +
-                "nameTable='" + nameTable + '\'' +
-                ", nameColumn='" + nameColumn + '\'' +
-                ", precision=" + precision +
-                '}';
     }
 }

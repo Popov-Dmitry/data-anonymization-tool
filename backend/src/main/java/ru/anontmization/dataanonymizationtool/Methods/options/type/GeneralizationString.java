@@ -1,23 +1,20 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 
+@Data
+@NoArgsConstructor
 public class GeneralizationString implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final String generalizationTable;
-    private final HashMap<String, String> value;
-
-    public GeneralizationString(String nameTable, String nameColumn, String generalizationTable, HashMap<String, String> value) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.generalizationTable = generalizationTable;
-        this.value = value;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private String generalizationTable;
+    private HashMap<String, String> value;
 
     @Override
     public String getTable() {

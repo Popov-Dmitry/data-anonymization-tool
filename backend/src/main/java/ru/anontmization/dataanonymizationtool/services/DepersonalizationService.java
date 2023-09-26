@@ -1,6 +1,7 @@
 package ru.anontmization.dataanonymizationtool.services;
 
-import lombok.Getter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,17 +12,26 @@ import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DepersonalizationService {
     private List<String> allMethods;
+    private Status status;
+
+    private enum Status {
+        WAIT, IN_PROGRESS, DONE
+    }
 
     private final ControllerDataBaseService controllerDB;
-    private static final Map<String, MaskItem> methods = new LinkedHashMap<>();
+
+    private List<MaskItem> methods = new ArrayList<>();
 
     {
+        status = Status.WAIT;
         allMethods = new ArrayList<>(
                 Arrays.asList(
                         DateAging.class.getSimpleName(),
@@ -41,34 +51,29 @@ public class DepersonalizationService {
         );
     }
 
-    @Getter
-    private String config;
 
     public void setConfig(String json) {
-
-//        Employee employee = objectMapper.readValue(employeeJson, Employee.class);
+        ObjectMapper mapper = new ObjectMapper();
         JSONArray methodsJSON = new JSONArray(json);
 
         for (int i = 0; i < methodsJSON.length(); i++) {
-            JSONObject method = methodsJSON.getJSONObject(i);
 
+            JSONObject method = methodsJSON.getJSONObject(i);
             String methodName = method.getString("method");
 
             if (allMethods.contains(methodName)) {
-                System.out.println(methodsJSON.get(i));
+                String params = method.getJSONObject("params").toString();
+                try {
+                    methods.add((MaskItem) mapper.readValue(params, Class.forName("ru.anontmization.dataanonymizationtool.Methods.options.type." + methodName)));
+                } catch (ClassNotFoundException | JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-
         }
-        config = json;
     }
 
     public String getMethods() {
-        return methods.toString();
-    }
-
-    public void addMethod(String nameOption, MaskItem item) {
-        methods.put(nameOption, item);
+        return allMethods.toString();
     }
 
     public void clear() {
@@ -76,10 +81,14 @@ public class DepersonalizationService {
     }
 
 
-    public void start() {
+    public String start() {
+        if (methods.isEmpty()) return "{\"error\" : \"empty methods\"}";
+        String time;
+
         init();
-        masking();
+        time = masking();
         deinit();
+        return time;
     }
 
     private void init() {
@@ -98,24 +107,27 @@ public class DepersonalizationService {
         controllerDB.connect();
     }
 
-    private void masking() {
-        methods.forEach((key, value) -> {
+    private String masking() {
+        status = Status.IN_PROGRESS;
+        long start = System.currentTimeMillis();
+        methods.forEach(item -> {
             try {
-                System.out.print(value.getTable() + "\t\t");
-
-                long start = System.currentTimeMillis();
-                value.start(controllerDB);
-                long end = System.currentTimeMillis();
-
-                NumberFormat formatter = new DecimalFormat("#0.00");
-                System.out.println(formatter.format((end - start) / 1000d).replace(",", "."));
+                item.start(controllerDB);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
+        long end = System.currentTimeMillis();
+        status = Status.DONE;
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format((end - start) / 1000d).replace(",", ".");
     }
 
     private void deinit() {
         controllerDB.disconnect();
+    }
+
+    public String getStatus() {
+        return status.name();
     }
 }

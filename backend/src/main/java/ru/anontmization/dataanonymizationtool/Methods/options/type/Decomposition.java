@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
@@ -7,18 +9,13 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Data
+@NoArgsConstructor
 public class Decomposition implements MaskItem {
-    private final String nameTable;
-    private final String nameColumn;
-    private final String nameNewTable;
-    private final ControllerDB controllerOfDatabaseToTransfer;
-
-    public Decomposition(String nameTable, String nameColumn, String nameNewTable, ControllerDB controllerOfDatabaseToTransfer) {
-        this.nameTable = nameTable;
-        this.nameColumn = nameColumn;
-        this.nameNewTable = nameNewTable;
-        this.controllerOfDatabaseToTransfer = controllerOfDatabaseToTransfer;
-    }
+    private String nameTable;
+    private String nameColumn;
+    private String nameNewTable;
+    private ControllerDB controllerOfDatabaseToTransfer;
 
     @Override
     public String getTable() {
