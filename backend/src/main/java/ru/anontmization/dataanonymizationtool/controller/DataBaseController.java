@@ -13,9 +13,6 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 public class DataBaseController {
     private final ControllerDataBaseService controllerService;
 
-    //получение имен таблиц
-    //получение таблиц
-    //...
     @GetMapping("")
     public String getStatus(){
         return controllerService.getTableNames();
