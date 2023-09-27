@@ -1,5 +1,6 @@
 package ru.anontmization.dataanonymizationtool.Methods.options.type;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Decomposition implements MaskItem {
     private String nameTable;
     private String nameColumn;
@@ -48,6 +50,9 @@ public class Decomposition implements MaskItem {
         );
 
         controllerOfDatabaseToTransfer.connect();
+        controllerOfDatabaseToTransfer.getStatement().execute(
+                "DROP TABLE IF EXISTS "+nameNewTable+";"
+        );
         controllerOfDatabaseToTransfer.getStatement().execute(
                 "CREATE TABLE "+nameNewTable+"(id SERIAL PRIMARY KEY, value "+typeColumn+");"
         );

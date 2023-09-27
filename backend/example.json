@@ -1,0 +1,132 @@
+[
+  {
+    "method" : "Shuffle",
+    "params" : {
+      "nameTable" : "condition",
+      "namesColumn" : ["condition"]
+    }
+  },
+  {
+    "method" : "ValueReplacement",
+    "params" : {
+      "nameTable" : "city",
+      "nameColumn" : "name_city",
+      "value" : "empty"
+    }
+  },
+  {
+    "method" : "DateAging",
+    "params" : {
+      "nameTable" : "weather",
+      "nameColumn" : "yearmoda",
+      "countDays" : 10
+    }
+  },
+  {
+    "method" : "Decomposition",
+    "params" : {
+      "nameTable" : "periods_infection",
+      "nameColumn" : "name_city",
+      "nameNewTable" : "periods_infection_city",
+      "url" : "jdbc:postgresql://localhost:5432/",
+      "nameDB" : "test",
+      "user" : "postgres",
+      "password" : "mask"
+    }
+  },
+  {
+    "method" : "GeneralizationString",
+    "params" : {
+      "nameTable" : "mkb10",
+      "nameColumn" : "mkb10",
+      "generalizationTable" : "gen_mkb10",
+      "value" : {
+        "A00.0":"A00",
+        "A00.1":"A00",
+        "A00.9":"A00",
+        "A01.0":"A01",
+        "A01.1":"A01",
+        "A01.2":"A01",
+        "A01.3":"A01",
+        "A01.4":"A01",
+        "A02.0":"A02",
+        "A02.1":"A02",
+        "A02.2+":"A02",
+        "A02.8":"A02",
+        "A02.9":"A02"
+      }
+    }
+  },
+  {
+    "method" : "GeneralizationValue",
+    "params" : {
+      "nameTable" : "population",
+      "nameColumn" : "years",
+      "generalizationTable" : "gen_years",
+      "generalizationName" : ["До 2004 года","После 2004 года"],
+      "minValue": [2000,2005],
+      "maxValue": [2005,2010],
+      "isDate": "false"
+    }
+  },
+  {
+    "method" : "Identifier",
+    "params" : {
+      "nameTable" : "population",
+      "namesColumn" : ["man","woman","total"],
+      "newNameTable" : "identifier"
+    }
+  },
+  {
+    "method" : "MicroAggregationBySingleAxis",
+    "params" : {
+      "nameTable" : "population",
+      "k" : 4,
+      "axisColumn" : "p15_more",
+      "namesColumn" : ["p15_more","p7_15"]
+
+    }
+  },
+  {
+    "method" : "MicroAggregation",
+    "params" : {
+      "nameTable" : "population",
+      "namesColumn" : ["p1_6","p0_15"],
+      "k" : 5
+    }
+  },
+  {
+    "method" : "Round",
+    "params" : {
+      "nameTable" : "weather",
+      "nameColumn" : "dewp",
+      "precision" : 0
+    }
+  },
+  {
+    "method" : "ValueReplacementByPattern",
+    "params" : {
+      "nameTable" : "mkb10",
+      "nameColumn" : "mkb10",
+      "regex" : "A",
+      "replacement" : "C"
+    }
+  },
+  {
+    "method" : "ValueReplacementFromFile",
+    "params" : {
+      "nameTable" : "city",
+      "nameColumn" : "name_city",
+      "nameFile" : "city.txt"
+    }
+  },
+  {
+    "method" : "ValueVariance",
+    "params" : {
+      "nameTable" : "population",
+      "nameColumn" : "newborn",
+      "percent" : 50,
+      "dataType" : "INTEGER"
+    }
+  }
+]

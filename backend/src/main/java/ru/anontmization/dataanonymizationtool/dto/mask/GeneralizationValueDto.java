@@ -12,5 +12,5 @@ public class GeneralizationValueDto {
     private ArrayList<String> generalizationName;
     private ArrayList<?> minValue;
     private ArrayList<?> maxValue;
-    private boolean isDate;
+    private String isDate;
 }

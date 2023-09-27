@@ -54,6 +54,52 @@ public class ControllerDataBaseService {
         }
     }
 
+    public String getTableNames(){
+        connect();
+        ResultSet resultSet;
+        StringBuilder tables = new StringBuilder();
+        boolean isStart = true;
+        tables.append("[");
+
+        try {
+            resultSet = statement.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';");
+            while(resultSet.next()){
+                if (!isStart) {
+                    tables.append(",");
+                }else{
+                    isStart = false;
+                }
+                tables.append("\"").append(resultSet.getString(1)).append("\"");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        disconnect();
+        return tables.append("]").toString();
+    }
+
+    public String getTable(){
+//        ResultSet resultSet;
+//        StringBuilder tables = new StringBuilder();
+//        boolean isStart = true;
+//        tables.append("[");
+//
+//        try {
+//            resultSet = statement.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';");
+//            while(resultSet.next()){
+//                if (!isStart) {
+//                    tables.append(",");
+//                }else{
+//                    isStart = false;
+//                }
+//                tables.append("\"").append(resultSet.getString(1)).append("\"");
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        return "dsa";
+    }
+
     @Override
     public String toString() {
         return "{" +

@@ -6,12 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,7 @@ public class DepersonalizationService {
     private enum Status {
         WAIT, IN_PROGRESS, DONE
     }
+    private LocalDateTime timeStart;
 
     private final ControllerDataBaseService controllerDB;
 
@@ -53,6 +56,8 @@ public class DepersonalizationService {
 
 
     public void setConfig(String json) {
+        methods.clear();
+
         ObjectMapper mapper = new ObjectMapper();
         JSONArray methodsJSON = new JSONArray(json);
 
@@ -60,6 +65,24 @@ public class DepersonalizationService {
 
             JSONObject method = methodsJSON.getJSONObject(i);
             String methodName = method.getString("method");
+
+            if(methodName.equals("Decomposition")){
+                JSONObject params = method.getJSONObject("params");
+                methods.add(
+                        new Decomposition(
+                                params.getString("nameTable"),
+                                params.getString("nameColumn"),
+                                params.getString("nameNewTable"),
+                                new ControllerDB(
+                                        params.getString("url"),
+                                        params.getString("nameDB"),
+                                        params.getString("user"),
+                                        params.getString("password")
+                                )
+                        )
+                );
+                continue;
+            }
 
             if (allMethods.contains(methodName)) {
                 String params = method.getJSONObject("params").toString();
@@ -84,7 +107,7 @@ public class DepersonalizationService {
     public String start() {
         if (methods.isEmpty()) return "{\"error\" : \"empty methods\"}";
         String time;
-
+        timeStart = LocalDateTime.now();
         init();
         time = masking();
         deinit();
@@ -104,12 +127,14 @@ public class DepersonalizationService {
 
         controllerDB.disconnect();
         controllerDB.setNameDB(maskDB);
-        controllerDB.connect();
+
     }
 
     private String masking() {
         status = Status.IN_PROGRESS;
         long start = System.currentTimeMillis();
+
+        controllerDB.connect();
         methods.forEach(item -> {
             try {
                 item.start(controllerDB);
@@ -117,6 +142,8 @@ public class DepersonalizationService {
                 throw new RuntimeException(e);
             }
         });
+        controllerDB.disconnect();
+
         long end = System.currentTimeMillis();
         status = Status.DONE;
         NumberFormat formatter = new DecimalFormat("#0.00");
@@ -128,6 +155,7 @@ public class DepersonalizationService {
     }
 
     public String getStatus() {
-        return status.name();
+        return "{\"status\" : \"" +status.name() + "\","+
+                "\"timeStart\" : \"" +timeStart + "\"}";
     }
 }

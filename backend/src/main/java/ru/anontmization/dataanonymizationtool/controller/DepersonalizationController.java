@@ -2,13 +2,8 @@ package ru.anontmization.dataanonymizationtool.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
-import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
-import ru.anontmization.dataanonymizationtool.dto.mask.*;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 import ru.anontmization.dataanonymizationtool.services.DepersonalizationService;
-
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/v1/mask")

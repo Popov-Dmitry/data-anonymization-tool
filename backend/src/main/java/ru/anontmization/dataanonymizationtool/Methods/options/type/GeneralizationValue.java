@@ -17,7 +17,7 @@ public class GeneralizationValue implements MaskItem {
     private ArrayList<String> generalizationName;
     private ArrayList<?> minValue;
     private ArrayList<?> maxValue;
-    private boolean isDate;
+    private String isDate;
 
     @Override
     public String getTable() {
@@ -26,6 +26,8 @@ public class GeneralizationValue implements MaskItem {
 
     @Override
     public void start(ControllerDataBaseService controllerDB) throws SQLException {
+        boolean date = isDate.equals("true");
+
 
         String isChangeNameColumn = "is_change_temp_column";
 
@@ -47,7 +49,7 @@ public class GeneralizationValue implements MaskItem {
                     "INSERT INTO "+generalizationTable+" (value) VALUES ('"+generalizationName.get(i)+"');"
             );
 
-            if (isDate){
+            if (date){
                 controllerDB.getStatement().execute(
                         "UPDATE "+nameTable+
                                 " SET "+isChangeNameColumn+"="+(i+1)+
