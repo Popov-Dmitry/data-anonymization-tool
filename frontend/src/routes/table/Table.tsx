@@ -1,7 +1,13 @@
+import "./Table.scss";
 import React from "react";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Methods from "../../components/methods/Methods";
+import { bemElement } from "../../utils/bem-class-names";
+
+const baseClassName = "table-component";
+const bem = bemElement(baseClassName);
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -37,20 +43,24 @@ const rows = [
 ];
 
 const Table = () => {
-  const { isConnected } = useDatabaseConnection();
   const navigate = useNavigate();
+  const { name } = useParams();
+  const { isConnected } = useDatabaseConnection();
 
   if (!isConnected) {
     navigate("/");
   }
 
   return (
-    <div>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-      />
+    <div className={baseClassName}>
+      <div className={bem("data")}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          editMode="row"
+        />
+      </div>
+      <Methods columns={columns.map((column) => column.field)} />
     </div>
   );
 };

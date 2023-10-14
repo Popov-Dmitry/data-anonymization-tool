@@ -1,0 +1,18 @@
+.generalization-value-inputs-modal {
+  &__inputs {
+    @apply flex flex-col gap-16px;
+    @apply w-100%;
+
+    &-header {
+      @apply my-10px;
+    }
+  }
+
+  &__row {
+    @apply flex items-center gap-8px;
+  }
+
+  &__buttons {
+    @apply flex justify-between;
+  }
+}

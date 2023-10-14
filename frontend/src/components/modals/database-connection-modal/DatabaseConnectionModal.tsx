@@ -12,7 +12,7 @@ import {
 import { bemElement } from "../../../utils/bem-class-names";
 import { useFormik } from "formik";
 import { joinClassNames } from "../../../utils/join-class-names";
-import { useDatabaseConnection } from "../../../providers/database-connection-provider";
+import { DatabaseConnectionData } from "../../../providers/database-connection-provider";
 
 const baseClassName = "database-connection-modal";
 const bem = bemElement(baseClassName);
@@ -33,39 +33,31 @@ const style = {
 interface IImportDataModalData {
   show: boolean;
   onHide: () => void;
-  onConnect?: () => void;
+  title?: string;
+  value: DatabaseConnectionData;
+  onApply?: (value: DatabaseConnectionData) => void;
   className?: string;
 }
 
 const DatabaseConnectionModal = ({
   show,
   onHide,
-  onConnect,
+  title = "Подключение к базе данных",
+  value,
+  onApply,
   className = ""
 }: IImportDataModalData) => {
-  const {
-    database,
-    server,
-    port,
-    username,
-    password,
-    databaseName,
-    updateDatabaseConnectionData,
-    setIsConnected
-  } = useDatabaseConnection();
   const databaseForm = useFormik({
     initialValues: {
-      database,
-      server,
-      port,
-      username,
-      password,
-      databaseName
+      database: value.database,
+      server: value.server,
+      port: value.port,
+      username: value.username,
+      password: value.password,
+      databaseName: value.databaseName
     },
-    onSubmit: (values, actions) => {
-      updateDatabaseConnectionData(values);
-      setIsConnected(true);
-      onConnect && onConnect();
+    onSubmit: (values) => {
+      onApply && onApply(values);
     }
   });
 
@@ -84,7 +76,7 @@ const DatabaseConnectionModal = ({
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
-        <Typography variant="h6">Подключение к базе данных</Typography>
+        <Typography variant="h6">{title}</Typography>
         <RadioGroup row className={bem("database")}>
           <div className={bem("radio")}>
             <Radio onClick={() => databaseForm.setFieldValue("database", "postgresql")} />
@@ -149,7 +141,7 @@ const DatabaseConnectionModal = ({
             // TODO
             onClick={databaseForm.submitForm}
           >
-            Далее
+            Готово
           </Button>
         </div>
       </Box>

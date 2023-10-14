@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-interface DatabaseConnectionData {
+export interface DatabaseConnectionData {
   database: string;
   server: string;
   port: string;

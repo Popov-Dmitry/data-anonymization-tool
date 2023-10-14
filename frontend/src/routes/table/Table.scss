@@ -1,0 +1,7 @@
+.table-component {
+  @apply flex gap-24px;
+
+  &__data {
+    @apply flex-1;
+  }
+}

@@ -1,0 +1,19 @@
+.generalization-string-inputs-modal {
+  &__inputs {
+    @apply flex flex-col gap-16px;
+    @apply w-100%;
+
+    &-header {
+      @apply my-8px;
+    }
+  }
+
+  &__row {
+    @apply flex items-center gap-8px;
+  }
+
+  &__button {
+    @apply self-end;
+    @apply w-150px;
+  }
+}

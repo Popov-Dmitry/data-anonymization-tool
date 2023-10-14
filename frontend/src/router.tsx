@@ -10,7 +10,7 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Header />
-      <main className="max-w-1200px m-auto">
+      <main className="max-w-1200px m-auto mt-8px">
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<Home />} />

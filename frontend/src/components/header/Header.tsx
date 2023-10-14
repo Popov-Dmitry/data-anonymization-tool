@@ -2,7 +2,7 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import { useDatabaseConnection } from "../../providers/database-connection-provider";
+import { DatabaseConnectionData, useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate } from "react-router-dom";
 import { Button, IconButton, Typography } from "@mui/material";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -23,8 +23,23 @@ const menu = [
 
 export default function MenuAppBar() {
   const navigate = useNavigate();
-  const { isConnected } = useDatabaseConnection();
+  const {
+    database,
+    server,
+    port,
+    username,
+    password,
+    databaseName,
+    isConnected,
+    updateDatabaseConnectionData,
+    setIsConnected
+  } = useDatabaseConnection();
   const [showDatabaseConnectionModal, setShowDatabaseConnectionModal] = useState<boolean>(false);
+
+  const onApply = (values: DatabaseConnectionData) => {
+    updateDatabaseConnectionData(values);
+    setIsConnected(true);
+  };
 
   if (!isConnected) {
     return null;
@@ -57,6 +72,15 @@ export default function MenuAppBar() {
         </AppBar>
       </Box>
       <DatabaseConnectionModal
+        value={{
+          database,
+          server,
+          port,
+          username,
+          password,
+          databaseName
+        }}
+        onApply={onApply}
         show={showDatabaseConnectionModal}
         onHide={() => setShowDatabaseConnectionModal(false)}
       />
