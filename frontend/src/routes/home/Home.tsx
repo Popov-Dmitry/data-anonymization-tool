@@ -5,6 +5,7 @@ import { bemElement } from "../../utils/bem-class-names";
 import DatabaseConnectionModal from "../../components/modals/database-connection-modal/DatabaseConnectionModal";
 import { DatabaseConnectionData, useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const baseClassName = "home-page";
 const bem = bemElement(baseClassName);
@@ -34,30 +35,36 @@ const Home = () => {
   }
 
   return (
-    <div className={baseClassName}>
-      <div className={bem("empty")}>
-        <Button
-          variant="contained"
-          size="large"
-          onClick={() => setShowDatabaseConnectionModal(true)}
-        >
-          Подключиться к базе данных
-        </Button>
+    <>
+      <Helmet>
+        <title>Подключение</title>
+        <meta property="og:title" content="Подключение" />
+      </Helmet>
+      <div className={baseClassName}>
+        <div className={bem("empty")}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => setShowDatabaseConnectionModal(true)}
+          >
+            Подключиться к базе данных
+          </Button>
+        </div>
+        <DatabaseConnectionModal
+          value={{
+            database,
+            server,
+            port,
+            username,
+            password,
+            databaseName
+          }}
+          onApply={onApply}
+          show={showDatabaseConnectionModal}
+          onHide={() => setShowDatabaseConnectionModal(false)}
+        />
       </div>
-      <DatabaseConnectionModal
-        value={{
-          database,
-          server,
-          port,
-          username,
-          password,
-          databaseName
-        }}
-        onApply={onApply}
-        show={showDatabaseConnectionModal}
-        onHide={() => setShowDatabaseConnectionModal(false)}
-      />
-    </div>
+    </>
   );
 };
 

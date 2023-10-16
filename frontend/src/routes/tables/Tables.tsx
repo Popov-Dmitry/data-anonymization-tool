@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { List, ListItem, ListItemButton, Typography } from "@mui/material";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
 import { bemElement } from "../../utils/bem-class-names";
+import { Helmet } from "react-helmet";
 
 const baseClassName = "tables-page";
 const bem = bemElement(baseClassName);
@@ -35,20 +36,26 @@ const Tables = () => {
   }
 
   return (
-    <div className={baseClassName}>
-      <Typography variant="h5" className={bem("title")}>
-        Выберите таблицу
-      </Typography>
-      <List>
-        {tablesMock.map((table) => (
-          <ListItem>
-            <ListItemButton onClick={() => navigate(`/tables/${table.name}`)}>
-              <Typography>{table.name}</Typography>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
+    <>
+      <Helmet>
+        <title>Таблицы</title>
+        <meta property="og:title" content="Таблицы" />
+      </Helmet>
+      <div className={baseClassName}>
+        <Typography variant="h5" className={bem("title")}>
+          Выберите таблицу
+        </Typography>
+        <List>
+          {tablesMock.map((table) => (
+            <ListItem>
+              <ListItemButton onClick={() => navigate(`/tables/${table.name}`)}>
+                <Typography>{table.name}</Typography>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </div>
+    </>
   );
 };
 
