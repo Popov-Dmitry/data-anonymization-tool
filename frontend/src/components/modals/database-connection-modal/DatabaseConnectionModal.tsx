@@ -3,10 +3,9 @@ import React from "react";
 import {
   Box,
   Button,
-  Input,
   Modal,
   Radio,
-  RadioGroup,
+  RadioGroup, TextField,
   Typography
 } from "@mui/material";
 import { bemElement } from "../../../utils/bem-class-names";
@@ -84,51 +83,52 @@ const DatabaseConnectionModal = ({
           </div>
         </RadioGroup>
         <div className={bem("fields")}>
-          <div>
-            <Typography>Сервер</Typography>
-            <Input
-              style={{ width: "100%" }}
-              name="server"
-              value={databaseForm.values.server}
-              onChange={databaseForm.handleChange}
-            />
-          </div>
-          <div>
-            <Typography>Порт</Typography>
-            <Input
-              style={{ width: "100%" }}
-              name="port"
-              value={databaseForm.values.port}
-              onChange={databaseForm.handleChange}
-            />
-          </div>
-          <div>
-            <Typography>Имя пользователя</Typography>
-            <Input
-              style={{ width: "100%" }}
-              name="username"
-              value={databaseForm.values.username}
-              onChange={databaseForm.handleChange}
-            />
-          </div>
-          <div>
-            <Typography>Пароль</Typography>
-            <Input
-              style={{ width: "100%" }}
-              name="password"
-              value={databaseForm.values.password}
-              onChange={databaseForm.handleChange}
-            />
-          </div>
-          <div>
-            <Typography>Название базы данных</Typography>
-            <Input
-              style={{ width: "100%" }}
-              name="databaseName"
-              value={databaseForm.values.databaseName}
-              onChange={databaseForm.handleChange}
-            />
-          </div>
+          <TextField
+            variant="standard"
+            label="Сервер"
+            type="text"
+            fullWidth
+            name="server"
+            value={databaseForm.values.server}
+            onChange={databaseForm.handleChange}
+          />
+          <TextField
+            className={bem("port")}
+            variant="standard"
+            label="Порт"
+            type="number"
+            fullWidth
+            name="port"
+            value={databaseForm.values.port}
+            onChange={databaseForm.handleChange}
+          />
+          <TextField
+            variant="standard"
+            label="Имя пользователя"
+            type="text"
+            fullWidth
+            name="username"
+            value={databaseForm.values.username}
+            onChange={databaseForm.handleChange}
+          />
+          <TextField
+            variant="standard"
+            label="Пароль"
+            type="password"
+            fullWidth
+            name="password"
+            value={databaseForm.values.password}
+            onChange={databaseForm.handleChange}
+          />
+          <TextField
+            variant="standard"
+            label="Название базы данных"
+            type="text"
+            fullWidth
+            name="databaseName"
+            value={databaseForm.values.databaseName}
+            onChange={databaseForm.handleChange}
+          />
         </div>
         <div className={bem("buttons")}>
           <Button variant="outlined" color="secondary" onClick={onHide}>

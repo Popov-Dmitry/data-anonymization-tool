@@ -13,6 +13,19 @@
     @apply w-full;
   }
 
+  &__port {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+
   &__buttons {
     @apply mt-16px;
     @apply flex justify-between;

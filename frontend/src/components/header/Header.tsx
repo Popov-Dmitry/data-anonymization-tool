@@ -16,8 +16,8 @@ const menu = [
     route: "/tables"
   },
   {
-    title: "Методы",
-    route: "/methods"
+    title: "Справка",
+    route: "/help"
   }
 ];
 
