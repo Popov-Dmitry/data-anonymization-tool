@@ -3,8 +3,7 @@ import { Button, FormControlLabel, Switch } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import DatabaseConnectionModal from "../modals/database-connection-modal/DatabaseConnectionModal";
 import { joinClassNames } from "../../utils/join-class-names";
-import { useFormik } from "formik";
-import { useDatabaseConnection } from "../../providers/database-connection-provider";
+import { DatabaseConnectionData, useDatabaseConnection } from "../../providers/database-connection-provider";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
@@ -20,19 +19,19 @@ const Decomposition = () => {
     password,
     databaseName
   } = useDatabaseConnection();
-  const databaseForm = useFormik({
-    initialValues: {
-      database,
-      server,
-      port,
-      username,
-      password,
-      databaseName
-    },
-    onSubmit: (values) => {
-      //TODO
-    }
+  const [data, setData] = useState<DatabaseConnectionData>({
+    database,
+    server,
+    port,
+    username,
+    password,
+    databaseName
   });
+
+  const onApply = (values: DatabaseConnectionData) => {
+    setData(values);
+    setShowInputsModal(false);
+  };
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
@@ -57,8 +56,8 @@ const Decomposition = () => {
           {showInputsModal && (
             <DatabaseConnectionModal
               title="Декомпозиция"
-              value={databaseForm.values}
-              onApply={databaseForm.handleChange}
+              value={data}
+              onApply={onApply}
               show={showInputsModal}
               onHide={() => setShowInputsModal(false)}
             />

@@ -24,7 +24,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 600,
   bgcolor: "background.paper",
   border: "none",
   borderRadius: 2,
@@ -89,7 +89,7 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
                   }}
                   sx={{width: 50}}
                 />
-                <FormControl fullWidth>
+                <FormControl sx={{width: 350}}>
                   <InputLabel id="demo-simple-select-label">Осевой столбец</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
@@ -106,14 +106,6 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
                     ))}
                   </Select>
                 </FormControl>
-                <IconButton
-                  color="primary"
-                  onClick={() => onDeleteClick(index)}
-                >
-                  <DeleteIcon color="action" />
-                </IconButton>
-              </div>
-              <div>
                 <MultiSelect
                   options={columns}
                   value={item.columns}
@@ -124,6 +116,12 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
                       (i === index ? { ...v, columns: value } : v)))
                   }}
                 />
+                <IconButton
+                  color="primary"
+                  onClick={() => onDeleteClick(index)}
+                >
+                  <DeleteIcon color="action" />
+                </IconButton>
               </div>
             </div>
           ))}
