@@ -51,7 +51,6 @@ const GeneralizationValueInputsModal = ({
   };
 
   const onDeleteClick = (index: number) => {
-    console.log(index);
     setGeneralizationName(generalizationName.filter((_, i) => i !== index));
     setMinValue(minValue.filter((_, i) => i !== index));
     setMaxValue(maxValue.filter((_, i) => i !== index));

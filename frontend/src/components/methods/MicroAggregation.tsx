@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import { joinClassNames } from "../../utils/join-class-names";
+import MicroAggregationInputsModal from "../modals/micro-aggregation-inputs-modal/MicroAggregationInputsModal";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
 interface IMicroAggregationData {
-  k: number;
-  setK: (k: number) => void;
+  columns: string[];
 }
 
-const MicroAggregation = ({ k, setK }: IMicroAggregationData) => {
+const MicroAggregation = ({ columns }: IMicroAggregationData) => {
   const [selected, setSelected] = useState<boolean>(false);
+  const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
@@ -25,14 +26,23 @@ const MicroAggregation = ({ k, setK }: IMicroAggregationData) => {
         className="flex-2"
       />
       {selected && (
-        <TextField
-          className="flex-1"
-          variant="standard"
-          label="k"
-          type="number"
-          value={k}
-          onChange={(event) => setK(parseInt(event.target.value))}
-        />
+        <>
+          <Button
+            className="flex-1"
+            variant="outlined"
+            size="small"
+            onClick={() => setShowInputsModal(true)}
+          >
+            Редактировать
+          </Button>
+          {showInputsModal && (
+            <MicroAggregationInputsModal
+              columns={columns}
+              show={showInputsModal}
+              onHide={() => setShowInputsModal(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );

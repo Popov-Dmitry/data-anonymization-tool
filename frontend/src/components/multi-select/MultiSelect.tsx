@@ -6,14 +6,20 @@ interface IMultiSelectData {
   label?: string;
   placeholder?: string;
   options: string[];
+  value?: string[];
   onChange?: (value: string[]) => void;
+  fullWidth?: boolean
+  className?: string;
 }
 
-const MultiSelect = ({ label, placeholder, options, onChange }: IMultiSelectData) => {
+const MultiSelect = ({ label, placeholder, options, value, onChange, fullWidth, className }: IMultiSelectData) => {
   return (
     <Autocomplete
+      className={className}
+      fullWidth={fullWidth}
       multiple
       options={options}
+      value={value}
       onChange={(_, newValue) => onChange && onChange(newValue)}
       getOptionLabel={(option) => option}
       disableCloseOnSelect

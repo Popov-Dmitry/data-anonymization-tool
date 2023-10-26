@@ -4,12 +4,24 @@
   @apply bg-surface+3;
   @apply px-16px py-12px mb-8px;
 
+  &-title {
+    @apply text-center;
+  }
+
   &__list {
     @apply my-8px;
+
+    &-title {
+      @apply pb-8px;
+    }
 
     &-content {
       @apply flex flex-col gap-4px;
     }
+  }
+
+  &__button {
+    @apply pt-12px;
   }
 }
 

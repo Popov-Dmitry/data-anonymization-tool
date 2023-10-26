@@ -1,3 +1,4 @@
+import "./Methods.scss";
 import React, { useState } from "react";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
@@ -6,9 +7,9 @@ import { joinClassNames } from "../../utils/join-class-names";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-const DateAging = () => {
+const ValueReplacement = () => {
   const [selected, setSelected] = useState<boolean>(false);
-  const [countDays, setCountDays] = useState<number>(1);
+  const [value, setValue] = useState<string>("");
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
@@ -17,21 +18,20 @@ const DateAging = () => {
           checked={selected}
           onChange={(event) => setSelected(event.target.checked)}
         />}
-        label="Дата старения"
-        className="flex-2"
+        label="Замена значения"
+        className="flex-shrink-0"
       />
       {selected && (
         <TextField
-          className="flex-1"
           variant="standard"
-          label="Количество дней"
-          type="number"
-          value={countDays}
-          onChange={(event) => setCountDays(parseInt(event.target.value))}
+          label="Новое значение"
+          type="text"
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
         />
       )}
     </div>
   );
 };
 
-export default DateAging;
+export default ValueReplacement;

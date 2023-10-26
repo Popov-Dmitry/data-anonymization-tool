@@ -19,13 +19,13 @@ const ValueReplacementByPattern = () => {
           checked={selected}
           onChange={(event) => setSelected(event.target.checked)}
         />}
-        label="Замена значения"
+        label="Замена значения по паттерну"
       />
       {selected && (
         <div className={bem("row")}>
           <TextField
             variant="standard"
-            label="Что заменить"
+            label="Паттерн для замены"
             type="text"
             value={regex}
             onChange={(event) => setRegex(event.target.value)}
@@ -33,7 +33,7 @@ const ValueReplacementByPattern = () => {
           <ArrowForwardIcon color="action" />
           <TextField
             variant="standard"
-            label="На что заменить"
+            label="Новое значение"
             type="text"
             value={replacement}
             onChange={(event) => setReplacement(event.target.value)}

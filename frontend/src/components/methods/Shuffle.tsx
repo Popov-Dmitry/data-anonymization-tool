@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Button, FormControlLabel, Switch } from "@mui/material";
-import { joinClassNames } from "../../utils/join-class-names";
 import { bemElement } from "../../utils/bem-class-names";
-import IdentifierInputsModal from "../modals/identifier-inputs-modal/IdentifierInputsModal";
+import { joinClassNames } from "../../utils/join-class-names";
+import ShuffleInputsModal from "../modals/shuffle-inputs-modal/ShuffleInputsModal";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IIdentifierData {
-  columns: string[];
+interface IShuffleData {
+  columns: string[]
 }
 
-const Identifier = ({ columns }: IIdentifierData) => {
+const Shuffle = ({ columns }: IShuffleData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
 
@@ -22,13 +22,8 @@ const Identifier = ({ columns }: IIdentifierData) => {
           checked={selected}
           onChange={(event) => setSelected(event.target.checked)}
         />}
-        label="Введение идентификаторов"
+        label="Перемешивание"
         className="flex-2"
-        sx={{
-          "& .MuiFormControlLabel-label": {
-            width: "100px"
-          }
-        }}
       />
       {selected && (
         <>
@@ -41,7 +36,7 @@ const Identifier = ({ columns }: IIdentifierData) => {
             Редактировать
           </Button>
           {showInputsModal && (
-            <IdentifierInputsModal
+            <ShuffleInputsModal
               columns={columns}
               show={showInputsModal}
               onHide={() => setShowInputsModal(false)}
@@ -53,4 +48,4 @@ const Identifier = ({ columns }: IIdentifierData) => {
   );
 };
 
-export default Identifier;
+export default Shuffle;

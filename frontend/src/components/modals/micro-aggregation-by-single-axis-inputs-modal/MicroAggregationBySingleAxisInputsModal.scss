@@ -1,0 +1,18 @@
+.micro-aggregation-inputs-modal {
+  &__content {
+    @apply my-16px;
+    @apply flex flex-col gap-16px;
+  }
+
+  &__column {
+    @apply flex flex-col gap-8px;
+  }
+
+  &__row {
+    @apply flex items-center gap-8px;
+  }
+
+  &__buttons {
+    @apply flex justify-between;
+  }
+}

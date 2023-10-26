@@ -1,47 +1,54 @@
 import React, { useState } from "react";
-import { Checkbox, FormControlLabel, Switch, TextField } from "@mui/material";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import { joinClassNames } from "../../utils/join-class-names";
+import MicroAggregationBySingleAxisInputsModal
+  from "../modals/micro-aggregation-by-single-axis-inputs-modal/MicroAggregationBySingleAxisInputsModal";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
 interface IMicroAggregationData {
-  k: number;
-  setK: (k: number) => void;
+  columns: string[];
 }
 
-const MicroAggregationBySingleAxis = ({ k, setK }: IMicroAggregationData) => {
+const MicroAggregationBySingleAxis = ({ columns }: IMicroAggregationData) => {
   const [selected, setSelected] = useState<boolean>(false);
-  const [isAxisColumn, setIsAxisColumn] = useState<boolean>(false);
+  const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
 
   return (
-    <div className={baseClassName}>
+    <div className={joinClassNames(baseClassName, bem("row"))}>
       <FormControlLabel
         control={<Switch
           checked={selected}
           onChange={(event) => setSelected(event.target.checked)}
         />}
         label="Микроагрегация по одной оси"
+        className="flex-2"
+        sx={{
+          "& .MuiFormControlLabel-label": {
+            width: "100px"
+          }
+        }}
       />
       {selected && (
-        <div className={joinClassNames(bem("row"), "gap-16px")}>
-          <TextField
-            variant="standard"
-            label="k"
-            type="number"
-            value={k}
-            onChange={(event) => setK(parseInt(event.target.value))}
-          />
-          <FormControlLabel
-            control={<Checkbox
-              checked={isAxisColumn}
-              onChange={(event) => setIsAxisColumn(event.target.checked)}
-            />}
-            label="Осевой столбец"
-            className="flex-shrink-0"
-          />
-        </div>
+        <>
+          <Button
+            className="flex-1"
+            variant="outlined"
+            size="small"
+            onClick={() => setShowInputsModal(true)}
+          >
+            Редактировать
+          </Button>
+          {showInputsModal && (
+            <MicroAggregationBySingleAxisInputsModal
+              columns={columns}
+              show={showInputsModal}
+              onHide={() => setShowInputsModal(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );
