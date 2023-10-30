@@ -56,15 +56,15 @@ const Methods = ({ columns }: IMethodsData) => {
               <Typography>{column}</Typography>
             </AccordionSummary>
             <AccordionDetails className={bem("list-content")}>
-              <DateAging />
-              <Decomposition />
-              <GeneralizationString />
-              <GeneralizationValue />
-              <Round />
-              <ValueReplacement />
-              <ValueReplacementByPattern />
-              <ValueReplacementFromFile />
-              <ValueVariance />
+              <DateAging column={column} />
+              <Decomposition column={column} />
+              <GeneralizationString column={column} />
+              <GeneralizationValue column={column} />
+              <Round column={column} />
+              <ValueReplacement column={column} />
+              <ValueReplacementByPattern column={column} />
+              <ValueReplacementFromFile column={column} />
+              <ValueVariance column={column} />
             </AccordionDetails>
           </Accordion>
         ))}

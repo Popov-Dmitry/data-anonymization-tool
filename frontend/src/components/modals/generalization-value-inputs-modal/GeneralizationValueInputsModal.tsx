@@ -5,6 +5,7 @@ import { Button, FormControlLabel, IconButton, Modal, Switch, TextField, Typogra
 import Box from "@mui/material/Box";
 import { bemElement } from "../../../utils/bem-class-names";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { IGeneralizationValue } from "../../methods/GeneralizationValue";
 
 const baseClassName = "generalization-value-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -25,16 +26,18 @@ const style = {
 interface IGeneralizationStringInputsModal {
   show: boolean;
   onHide: () => void;
+  saveData: (data: IGeneralizationValue) => void;
   className?: string;
 }
 
 const GeneralizationValueInputsModal = ({
   show,
   onHide,
+  saveData,
   className = ""
 }: IGeneralizationStringInputsModal) => {
   const [generalizationTable, setGeneralizationTable] = useState<string>("");
-  const [isDates, setIsDate] = useState<boolean>(false);
+  const [isDate, setIsDate] = useState<boolean>(false);
   const [generalizationName, setGeneralizationName] = useState<string[]>([""]);
   const [minValue, setMinValue] = useState<string[]>([""]);
   const [maxValue, setMaxValue] = useState<string[]>([""]);
@@ -43,6 +46,19 @@ const GeneralizationValueInputsModal = ({
     && generalizationName?.length === maxValue?.length
     && generalizationName?.length > 0
     && generalizationTable;
+
+  const _onHide = () => {
+    if (isFormValid) {
+      saveData({
+        generalizationTable,
+        generalizationName,
+        minValue,
+        maxValue,
+        isDate
+      });
+    }
+    onHide();
+  };
 
   const onAddClick = () => {
     setGeneralizationName([ ...generalizationName, "" ]);
@@ -59,7 +75,7 @@ const GeneralizationValueInputsModal = ({
   return (
     <Modal
       open={show}
-      onClose={onHide}
+      onClose={_onHide}
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
@@ -77,7 +93,7 @@ const GeneralizationValueInputsModal = ({
             />
             <FormControlLabel
               control={<Switch
-                checked={isDates}
+                checked={isDate}
                 onChange={(event) => setIsDate(event.target.checked)}
               />}
               label="Даты"
@@ -102,7 +118,7 @@ const GeneralizationValueInputsModal = ({
               <TextField
                 variant="outlined"
                 label="Минимальное значение"
-                type={isDates ? "date" : "number"}
+                type={isDate ? "date" : "number"}
                 fullWidth
                 required
                 inputProps={{style: {fontSize: 12}}}
@@ -116,7 +132,7 @@ const GeneralizationValueInputsModal = ({
               <TextField
                 variant="outlined"
                 label="Максимальное значение"
-                type={isDates ? "date" : "number"}
+                type={isDate ? "date" : "number"}
                 fullWidth
                 required
                 inputProps={{style: {fontSize: 12}}}
@@ -147,8 +163,7 @@ const GeneralizationValueInputsModal = ({
               variant="contained"
               className="flex-2"
               disabled={!isFormValid}
-              // TODO
-              onClick={onHide}
+              onClick={_onHide}
             >
               Готово
             </Button>

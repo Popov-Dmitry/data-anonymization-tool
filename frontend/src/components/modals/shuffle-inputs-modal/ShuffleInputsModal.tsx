@@ -26,10 +26,11 @@ interface IShuffleInputsModal {
   columns: string[]
   show: boolean;
   onHide: () => void;
+  saveData: (data: string[][]) => void;
   className?: string;
 }
 
-const ShuffleInputsModal = ({ columns, show, onHide, className = "" }: IShuffleInputsModal) => {
+const ShuffleInputsModal = ({ columns, show, onHide, saveData, className = "" }: IShuffleInputsModal) => {
   const [data, setData] = useState<string[][]>([[]]);
 
   const isFormValid = data.length > 0
@@ -43,10 +44,17 @@ const ShuffleInputsModal = ({ columns, show, onHide, className = "" }: IShuffleI
     setData(data.filter((_, i) => i !== index));
   };
 
+  const _onHide = () => {
+    if (isFormValid) {
+      saveData(data);
+    }
+    onHide();
+  };
+
   return (
     <Modal
       open={show}
-      onClose={onHide}
+      onClose={_onHide}
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
@@ -82,8 +90,7 @@ const ShuffleInputsModal = ({ columns, show, onHide, className = "" }: IShuffleI
             variant="contained"
             className="flex-2"
             disabled={!isFormValid}
-            // TODO
-            onClick={onHide}
+            onClick={_onHide}
           >
             Готово
           </Button>

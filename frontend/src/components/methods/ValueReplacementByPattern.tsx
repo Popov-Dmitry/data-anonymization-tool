@@ -1,16 +1,35 @@
 import "./Methods.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { bemElement } from "../../utils/bem-class-names";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-const ValueReplacementByPattern = () => {
+interface IValueReplacementByPatternData {
+  column: string;
+}
+
+const ValueReplacementByPattern = ({ column }: IValueReplacementByPatternData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [regex, setRegex] = useState<string>("");
   const [replacement, setReplacement] = useState<string>("");
+  const { addData, isTriggered } = useMethodsInputs();
+
+  useEffect(() => {
+    if (isTriggered && selected) {
+      addData([{
+        method: "ValueReplacementByPattern",
+        params: {
+          nameColumn : column,
+          regex,
+          replacement
+        }
+      }]);
+    }
+  }, [addData, column, isTriggered, regex, replacement, selected]);
 
   return (
     <div className={baseClassName}>

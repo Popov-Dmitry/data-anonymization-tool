@@ -1,18 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 
+type TMethod = "Shuffle" | "ValueReplacement" | "DateAging" | "Decomposition"
+  | "GeneralizationString" | "GeneralizationValue" | "Identifier"
+  | "MicroAggregationBySingleAxis" | "MicroAggregation" | "Round"
+  | "ValueReplacementByPattern" | "ValueReplacementFromFile" | "ValueVariance";
+
 interface IMethodsInputsData {
-  id: string;
-  method: string;
+  method: TMethod;
   params: any;
 }
 
 interface MethodsInputsContextInterface {
+  isTriggered: boolean;
+  triggerDataCollecting: () => void;
   nameTable: string;
   setNameTable: (nameTable: string) => void;
   data: any;
   addData: (values: IMethodsInputsData[]) => void;
-  deleteDataByIds: (ids: string[]) => void;
-  getData: (method: string) => IMethodsInputsData[];
 }
 
 interface Props {
@@ -25,6 +29,7 @@ const MethodsInputsStateContext = React.createContext<
 
 export function MethodsInputsProvider(props: Props) {
   const { children } = props;
+  const [isTriggered, setIsTriggered] = useState<boolean>(false);
   const [nameTable, setNameTable] = useState<string>("");
   const [data, setData] = useState<IMethodsInputsData[]>([]);
 
@@ -32,38 +37,31 @@ export function MethodsInputsProvider(props: Props) {
     setData([]);
   }, [nameTable]);
 
-  const addData = useCallback(
-    (values: IMethodsInputsData[]) => {
-      setData((prevState) => [
-        ...prevState, ...values.map((value) => ({ ...value, params: { ...value.params, nameTable } }))
-      ]);
+  const triggerDataCollecting = useCallback(
+    () => {
+      setData((prevState) => prevState.map((value) =>
+        ({ ...value, params: { ...value.params, nameTable } })));
+      setIsTriggered(true);
     },
     [nameTable]
   );
 
-  const deleteDataByIds = useCallback(
-    (ids: string[]) => {
-      setData((prevState) =>
-        (prevState.filter((value) => !ids.some((id) => id === value.id))));
+  const addData = useCallback(
+    (values: IMethodsInputsData[]) => {
+      setData((prevState) => [...prevState, ...values]);
     },
     []
-  );
-
-  const getData = useCallback(
-    (method: string): IMethodsInputsData[] =>
-      (data.filter((value) => value.method === method)),
-    [data]
   );
 
   return (
     <MethodsInputsStateContext.Provider
       value={{
+        isTriggered,
+        triggerDataCollecting,
         nameTable,
         setNameTable,
         data,
-        addData,
-        deleteDataByIds,
-        getData
+        addData
       }}
     >
       {children}
@@ -74,7 +72,7 @@ export function MethodsInputsProvider(props: Props) {
 export function useMethodsInputs() {
   const context = React.useContext(MethodsInputsStateContext);
   if (context === undefined) {
-    throw new Error("useMethodsInputs must be used within a AxiosProvider");
+    throw new Error("useMethodsInputs must be used within a MethodsInputsProvider");
   }
   return context;
 }

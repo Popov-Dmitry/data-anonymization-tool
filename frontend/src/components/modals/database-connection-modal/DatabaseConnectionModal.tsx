@@ -1,5 +1,5 @@
 import "./DatabaseConnectionModal.scss";
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -29,12 +29,13 @@ const style = {
   p: 4
 };
 
-interface IImportDataModalData {
+interface IDatabaseConnectionModalData {
   show: boolean;
   onHide: () => void;
   title?: string;
   value: DatabaseConnectionData;
-  onApply?: (value: DatabaseConnectionData) => void;
+  onApply?: (value: DatabaseConnectionData, nameNewTable?: string) => void;
+  withTable?: boolean;
   className?: string;
 }
 
@@ -44,8 +45,9 @@ const DatabaseConnectionModal = ({
   title = "Подключение к базе данных",
   value,
   onApply,
+  withTable,
   className = ""
-}: IImportDataModalData) => {
+}: IDatabaseConnectionModalData) => {
   const databaseForm = useFormik({
     initialValues: {
       database: value.database,
@@ -53,12 +55,13 @@ const DatabaseConnectionModal = ({
       port: value.port,
       username: value.username,
       password: value.password,
-      databaseName: value.databaseName
+      databaseName: value.databaseName,
     },
     onSubmit: (values) => {
       onApply && onApply(values);
     }
   });
+  const [nameNewTable, setNameNewTable] = useState<string>("");
 
   const isFormEmpty =
     databaseForm.values.database.length === 0 ||
@@ -66,7 +69,8 @@ const DatabaseConnectionModal = ({
     databaseForm.values.port.length === 0 ||
     databaseForm.values.username.length === 0 ||
     databaseForm.values.password.length === 0 ||
-    databaseForm.values.databaseName.length === 0;
+    databaseForm.values.databaseName.length === 0 ||
+    (withTable && nameNewTable.length === 0);
 
   return (
     <Modal
@@ -129,6 +133,16 @@ const DatabaseConnectionModal = ({
             value={databaseForm.values.databaseName}
             onChange={databaseForm.handleChange}
           />
+          {withTable && (
+            <TextField
+              variant="standard"
+              label="Имя новой таблицы"
+              type="text"
+              fullWidth
+              value={nameNewTable}
+              onChange={(event) => setNameNewTable(event.target.value)}
+            />
+          )}
         </div>
         <div className={bem("buttons")}>
           <Button variant="outlined" color="secondary" onClick={onHide}>

@@ -67,7 +67,7 @@ export function DatabaseConnectionProvider(props: Props) {
 export function useDatabaseConnection() {
   const context = React.useContext(DatabaseConnectionStateContext);
   if (context === undefined) {
-    throw new Error("useDatabaseConnection must be used within a AxiosProvider");
+    throw new Error("useDatabaseConnection must be used within a DatabaseConnectionProvider");
   }
   return context;
 }

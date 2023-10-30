@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import { joinClassNames } from "../../utils/join-class-names";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
@@ -13,10 +14,28 @@ enum DataType {
   DATE = "DATE"
 }
 
-const ValueVariance = () => {
+interface IValueVarianceData {
+  column: string;
+}
+
+const ValueVariance = ({ column }: IValueVarianceData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [percent, setPercent] = useState<number>(0);
   const [dataType, setDataType] = useState<DataType>(DataType.INTEGER);
+  const { addData, isTriggered } = useMethodsInputs();
+
+  useEffect(() => {
+    if (isTriggered && selected) {
+      addData([{
+        method: "ValueVariance",
+        params: {
+          nameColumn : column,
+          percent,
+          dataType
+        }
+      }]);
+    }
+  }, [addData, column, isTriggered, selected]);
 
   return (
     <div className={baseClassName}>

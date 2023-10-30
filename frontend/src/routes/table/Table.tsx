@@ -1,11 +1,12 @@
 import "./Table.scss";
-import React from "react";
+import React, { useEffect } from "react";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate, useParams } from "react-router-dom";
 import Methods from "../../components/methods/Methods";
 import { bemElement } from "../../utils/bem-class-names";
 import { Helmet } from "react-helmet";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "table-component";
 const bem = bemElement(baseClassName);
@@ -47,6 +48,13 @@ const Table = () => {
   const navigate = useNavigate();
   const { name } = useParams();
   const { isConnected } = useDatabaseConnection();
+  const { setNameTable } = useMethodsInputs();
+  
+  useEffect(() => {
+    if (name) {
+      setNameTable(name);
+    }
+  }, [name, setNameTable])
 
   if (!isConnected) {
     navigate("/");

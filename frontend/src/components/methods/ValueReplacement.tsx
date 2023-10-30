@@ -1,15 +1,33 @@
 import "./Methods.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import { joinClassNames } from "../../utils/join-class-names";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-const ValueReplacement = () => {
+interface IValueReplacementData {
+  column: string;
+}
+
+const ValueReplacement = ({ column }: IValueReplacementData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [value, setValue] = useState<string>("");
+  const { addData, isTriggered } = useMethodsInputs();
+
+  useEffect(() => {
+    if (isTriggered && selected) {
+      addData([{
+        method: "ValueReplacement",
+        params: {
+          nameColumn : column,
+          value
+        }
+      }]);
+    }
+  }, [addData, column, isTriggered, value, selected]);
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>

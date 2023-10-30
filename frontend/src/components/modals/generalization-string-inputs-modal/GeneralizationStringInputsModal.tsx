@@ -1,10 +1,12 @@
 import "./GeneralizationStringInputsModal.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { joinClassNames } from "../../../utils/join-class-names";
 import { Button, Modal, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { bemElement } from "../../../utils/bem-class-names";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useMethodsInputs } from "../../../providers/methods-inputs-provider";
+import { IGeneralizationString } from "../../methods/GeneralizationString";
 
 const baseClassName = "generalization-string-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -25,12 +27,14 @@ const style = {
 interface IGeneralizationStringInputsModal {
   show: boolean;
   onHide: () => void;
+  saveData: (data: IGeneralizationString) => void;
   className?: string;
 }
 
 const GeneralizationStringInputsModal = ({
   show,
   onHide,
+  saveData,
   className = ""
 }: IGeneralizationStringInputsModal) => {
   const [generalizationTable, setGeneralizationTable] = useState<string>("");
@@ -40,10 +44,20 @@ const GeneralizationStringInputsModal = ({
 
   const isFormValid = data && Object.keys(data) && generalizationTable;
 
+  const _onHide = () => {
+    if (isFormValid) {
+      saveData({
+        generalizationTable,
+        value: data
+      });
+    }
+    onHide();
+  };
+
   return (
     <Modal
       open={show}
-      onClose={onHide}
+      onClose={_onHide}
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
@@ -132,8 +146,7 @@ const GeneralizationStringInputsModal = ({
             variant="contained"
             className={bem("button")}
             disabled={!isFormValid}
-            // TODO
-            onClick={onHide}
+            onClick={_onHide}
           >
             Готово
           </Button>

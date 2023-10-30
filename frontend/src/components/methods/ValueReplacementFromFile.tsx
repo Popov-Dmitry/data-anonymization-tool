@@ -1,12 +1,30 @@
 import "./Methods.scss";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "method";
 
-const ValueReplacementFromFile = () => {
+interface IValueReplacementFromFileData {
+  column: string;
+}
+
+const ValueReplacementFromFile = ({ column }: IValueReplacementFromFileData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [nameFile, setNameFile] = useState<string>("");
+  const { addData, isTriggered } = useMethodsInputs();
+
+  useEffect(() => {
+    if (isTriggered && selected) {
+      addData([{
+        method: "ValueReplacementFromFile",
+        params: {
+          nameColumn : column,
+          nameFile
+        }
+      }]);
+    }
+  }, [addData, column, isTriggered, nameFile, selected]);
 
   return (
     <div className={baseClassName}>

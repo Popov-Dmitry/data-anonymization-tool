@@ -2,9 +2,10 @@ import "./IdentifierInputsModal.scss";
 import React, { useState } from "react";
 import { bemElement } from "../../../utils/bem-class-names";
 import { joinClassNames } from "../../../utils/join-class-names";
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { IIdentifier } from "../../methods/Identifier";
 
 const baseClassName = "identifier-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -26,17 +27,30 @@ interface IIdentifierInputsModal {
   columns: string[]
   show: boolean;
   onHide: () => void;
+  saveData: (data: IIdentifier[]) => void;
   className?: string;
 }
 
-const IdentifierInputsModal = ({ columns, show, onHide, className = "" }: IIdentifierInputsModal) => {
-  const [data, setData] = useState<string[][]>([[]]);
+const defaultValue = {
+  newNameTable: "",
+  namesColumn: []
+};
+
+const IdentifierInputsModal = ({ columns, show, onHide, saveData, className = "" }: IIdentifierInputsModal) => {
+  const [data, setData] = useState<IIdentifier[]>([defaultValue]);
 
   const isFormValid = data.length > 0
-    && data.filter((item) => item.length > 0).length === data.length;
+    && data.filter((item) => item.namesColumn.length > 0 && item.newNameTable.length > 0).length === data.length;
+
+  const _onHide = () => {
+    if (isFormValid) {
+      saveData(data);
+    }
+    onHide();
+  };
 
   const onAddClick = () => {
-    setData([ ...data, [] ]);
+    setData([ ...data, defaultValue ]);
   };
 
   const onDeleteClick = (index: number) => {
@@ -46,7 +60,7 @@ const IdentifierInputsModal = ({ columns, show, onHide, className = "" }: IIdent
   return (
     <Modal
       open={show}
-      onClose={onHide}
+      onClose={_onHide}
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
@@ -54,12 +68,21 @@ const IdentifierInputsModal = ({ columns, show, onHide, className = "" }: IIdent
         <div className={bem("content")}>
           {data.map((item, index) => (
             <div key={index} className={bem("row")}>
+              <TextField
+                variant="standard"
+                label="Имя новой таблицы"
+                type="text"
+                className="flex-1"
+                required
+                value={item.newNameTable}
+                onChange={(event) => setData(data.map((v, i) => i === index ? { ...item, newNameTable: event.target.value } : v))}
+              />
               <MultiSelect
-                options={columns.filter((column) => !data.some((value, i) => index !== i && value.some(((v) => v === column))))}
+                options={columns.filter((column) => !data.some((value, i) => index !== i && value.namesColumn.some(((v) => v === column))))}
                 placeholder="Выберете столбцы"
                 fullWidth
-                value={item}
-                onChange={(value) => setData(data.map((v, i) => i === index ? value : v))}
+                value={item.namesColumn}
+                onChange={(value) => setData(data.map((v, i) => i === index ? { ...item, namesColumn: value } : v))}
               />
               <IconButton
                 color="primary"
@@ -82,8 +105,7 @@ const IdentifierInputsModal = ({ columns, show, onHide, className = "" }: IIdent
             variant="contained"
             className="flex-2"
             disabled={!isFormValid}
-            // TODO
-            onClick={onHide}
+            onClick={_onHide}
           >
             Готово
           </Button>

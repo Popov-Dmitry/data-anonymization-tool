@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { IMicroAggregationBySingleAxis } from "../../methods/MicroAggregationBySingleAxis";
 
 const baseClassName = "micro-aggregation-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -36,22 +37,17 @@ interface IMicroAggregationBySingleAxisInputsModal {
   columns: string[]
   show: boolean;
   onHide: () => void;
+  saveData: (data: IMicroAggregationBySingleAxis[]) => void;
   className?: string;
-}
-
-interface IMicroAggregationBySingleAxis {
-  axisColumn: string;
-  k: number;
-  columns: string[];
 }
 
 const defaultSettings: IMicroAggregationBySingleAxis = {
   axisColumn: "",
   k: 1,
-  columns: []
+  namesColumn: []
 };
 
-const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, className = "" }: IMicroAggregationBySingleAxisInputsModal) => {
+const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, saveData, className = "" }: IMicroAggregationBySingleAxisInputsModal) => {
   const [data, setData] = useState<IMicroAggregationBySingleAxis[]>([defaultSettings]);
 
   const onAddClick = () => {
@@ -63,12 +59,19 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
   };
 
   const isFormValid = data.length > 0
-    && data.filter((item) => item.k > 0 && item.columns.length > 0).length === data.length;
+    && data.filter((item) => item.k > 0 && item.namesColumn.length > 0).length === data.length;
+
+  const _onHide = () => {
+    if (isFormValid) {
+      saveData(data);
+    }
+    onHide();
+  };
 
   return (
     <Modal
       open={show}
-      onClose={onHide}
+      onClose={_onHide}
       className={joinClassNames(baseClassName, className)}
     >
       <Box sx={style}>
@@ -108,7 +111,7 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
                 </FormControl>
                 <MultiSelect
                   options={columns}
-                  value={item.columns}
+                  value={item.namesColumn}
                   placeholder="Выберете столбцы"
                   fullWidth
                   onChange={(value) => {
@@ -138,8 +141,7 @@ const MicroAggregationBySingleAxisInputsModal = ({ columns, show, onHide, classN
             variant="contained"
             className="flex-2"
             disabled={!isFormValid}
-            // TODO
-            onClick={onHide}
+            onClick={_onHide}
           >
             Готово
           </Button>
