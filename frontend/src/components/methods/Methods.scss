@@ -34,7 +34,7 @@
   }
 
   &__button {
-    @apply bg-background border-t border-t-outline-variant p-10px;
+    @apply py-10px;
     @apply sticky bottom-0 left-0 right-0 z-10;
   }
 }
