@@ -30,6 +30,10 @@
     @apply flex items-center gap-8px;
   }
 
+  &__approved {
+    @apply flex items-center;
+  }
+
   &__full-width {
     @apply w-100%;
   }

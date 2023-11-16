@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, FormControlLabel, Switch } from "@mui/material";
+import { Button, FormControlLabel, Switch, Tooltip } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import DatabaseConnectionModal from "../modals/database-connection-modal/DatabaseConnectionModal";
 import { joinClassNames } from "../../utils/join-class-names";
@@ -59,14 +59,19 @@ const Decomposition = ({ column }: IDecompositionData) => {
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Декомпозиция"
-        className="flex-2"
-      />
+      <div className={joinClassNames(bem("approved"), "flex-2")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Декомпозиция"
+        />
+        <Tooltip title="Одобрено Роскомнадзором">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
+
       {selected && (
         <Button
           className="flex-1"

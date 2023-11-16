@@ -1,9 +1,11 @@
 import "./Methods.scss";
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
+import { bemElement } from "../../utils/bem-class-names";
 
 const baseClassName = "method";
+const bem = bemElement(baseClassName);
 
 interface IValueReplacementFromFileData {
   column: string;
@@ -28,14 +30,18 @@ const ValueReplacementFromFile = ({ column }: IValueReplacementFromFileData) => 
 
   return (
     <div className={baseClassName}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Замена значения из файла"
-        className="flex-shrink-0"
-      />
+      <div className={bem("approved")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Замена значения из файла"
+        />
+        <Tooltip title="Одобрено Роскомнадзором">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
       {selected && (
         <TextField
           variant="standard"

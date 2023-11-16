@@ -41,9 +41,9 @@ const Methods = ({ columns }: IMethodsData) => {
         <Typography variant="h6">Для групп столбцов</Typography>
         <div>
           <Shuffle columns={columns} />
+          <Identifier columns={columns} />
           <MicroAggregation columns={columns} />
           <MicroAggregationBySingleAxis columns={columns} />
-          <Identifier columns={columns} />
         </div>
       </div>
       <div className={bem("list")}>
@@ -56,14 +56,14 @@ const Methods = ({ columns }: IMethodsData) => {
               <Typography>{column}</Typography>
             </AccordionSummary>
             <AccordionDetails className={bem("list-content")}>
-              <DateAging column={column} />
               <Decomposition column={column} />
-              <GeneralizationString column={column} />
-              <GeneralizationValue column={column} />
-              <Round column={column} />
               <ValueReplacement column={column} />
               <ValueReplacementByPattern column={column} />
               <ValueReplacementFromFile column={column} />
+              <GeneralizationString column={column} />
+              <GeneralizationValue column={column} />
+              <DateAging column={column} />
+              <Round column={column} />
               <ValueVariance column={column} />
             </AccordionDetails>
           </Accordion>

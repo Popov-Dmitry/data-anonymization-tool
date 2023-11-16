@@ -1,6 +1,6 @@
 import "./Methods.scss";
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { bemElement } from "../../utils/bem-class-names";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
@@ -33,13 +33,18 @@ const ValueReplacementByPattern = ({ column }: IValueReplacementByPatternData) =
 
   return (
     <div className={baseClassName}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Замена значения по паттерну"
-      />
+      <div className={bem("approved")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Замена значения по паттерну"
+        />
+        <Tooltip title="Одобрено Роскомнадзором">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
       {selected && (
         <div className={bem("row")}>
           <TextField

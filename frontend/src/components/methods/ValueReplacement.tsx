@@ -1,6 +1,6 @@
 import "./Methods.scss";
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material";
 import { bemElement } from "../../utils/bem-class-names";
 import { joinClassNames } from "../../utils/join-class-names";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
@@ -31,14 +31,18 @@ const ValueReplacement = ({ column }: IValueReplacementData) => {
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Замена значения"
-        className="flex-shrink-0"
-      />
+      <div className={joinClassNames(bem("approved"), "flex-shrink-0")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Замена значения"
+        />
+        <Tooltip title="Одобрено Роскомнадзором">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
       {selected && (
         <TextField
           variant="standard"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, FormControlLabel, Switch } from "@mui/material";
+import { Button, FormControlLabel, Switch, Tooltip } from "@mui/material";
 import GeneralizationStringInputsModal
   from "../modals/generalization-string-inputs-modal/GeneralizationStringInputsModal";
 import { bemElement } from "../../utils/bem-class-names";
@@ -39,14 +39,18 @@ const GeneralizationString = ({ column }: IGeneralizationStringData) => {
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Обобщение строк"
-        className="flex-2"
-      />
+      <div className={joinClassNames(bem("approved"), "flex-2")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Обобщение строк"
+        />
+        <Tooltip title="Одобрено Роскомнадзором">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
       {selected && (
         <Button
           className="flex-1"

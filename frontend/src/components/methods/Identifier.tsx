@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, FormControlLabel, Switch } from "@mui/material";
+import { Button, FormControlLabel, Switch, Tooltip } from "@mui/material";
 import { joinClassNames } from "../../utils/join-class-names";
 import { bemElement } from "../../utils/bem-class-names";
 import IdentifierInputsModal from "../modals/identifier-inputs-modal/IdentifierInputsModal";
@@ -31,19 +31,23 @@ const Identifier = ({ columns }: IIdentifierData) => {
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
-      <FormControlLabel
-        control={<Switch
-          checked={selected}
-          onChange={(event) => setSelected(event.target.checked)}
-        />}
-        label="Введение идентификаторов"
-        className="flex-2"
-        sx={{
-          "& .MuiFormControlLabel-label": {
-            width: "100px"
-          }
-        }}
-      />
+      <div className={joinClassNames(bem("approved"), "flex-2")}>
+        <FormControlLabel
+          control={<Switch
+            checked={selected}
+            onChange={(event) => setSelected(event.target.checked)}
+          />}
+          label="Введение идентификаторов"
+          sx={{
+            "& .MuiFormControlLabel-label": {
+              width: "100px"
+            }
+          }}
+        />
+        <Tooltip title="Одобрено Роскомнадзором" className="self-start mt-4px">
+          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+        </Tooltip>
+      </div>
       {selected && (
         <Button
           className="flex-1"

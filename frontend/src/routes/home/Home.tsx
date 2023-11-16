@@ -49,6 +49,13 @@ const Home = () => {
           >
             Подключиться к базе данных
           </Button>
+          <Button
+            variant="contained"
+            size="large"
+            disabled
+          >
+            Загрузить файл .csv
+          </Button>
         </div>
         <DatabaseConnectionModal
           value={{
