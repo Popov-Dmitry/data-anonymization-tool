@@ -3,6 +3,15 @@
   @apply rounded-16px shadow-evaluation-2;
   @apply bg-surface+3;
   @apply px-16px py-12px mb-8px;
+  @apply h-[calc(100vh_-_120px)];
+  @apply overflow-y-scroll;
+  @apply relative;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &-title {
     @apply text-center;
@@ -20,8 +29,13 @@
     }
   }
 
+  &__tab-content {
+    @apply mt-16px;
+  }
+
   &__button {
-    @apply pt-12px;
+    @apply bg-background border-t border-t-outline-variant p-10px;
+    @apply sticky bottom-0 left-0 right-0 z-10;
   }
 }
 
