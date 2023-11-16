@@ -16,7 +16,7 @@ const RiskAssessmentMethod = () => {
     if (method?.method) {
       setMethod({
         method: method?.method,
-        param: parseInt(event.target.value)
+        param: parseInt(event.target.value) || 0
       });
     }
   };
@@ -40,7 +40,7 @@ const RiskAssessmentMethod = () => {
           className="mt-16px"
           variant="outlined"
           label={method?.method === "prosecutorMetricA" ? "Порог" : "Пропорция"}
-          type="text"
+          type="number"
           fullWidth
           value={method.param}
           onChange={handleChangeParam}
