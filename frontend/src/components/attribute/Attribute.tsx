@@ -8,10 +8,14 @@ interface IAttributeData {
 
 const Attribute = ({ column }: IAttributeData) => {
   const { changeAttributeType, attributesType } = useRiskAssessment();
-  const [value, setValue] = React.useState<TAttributeType>();
+  const [value, setValue] = React.useState<TAttributeType>("identifier");
+  console.log(value);
 
   useEffect(() => {
-    setValue(attributesType.find((attribute) => attribute.name === column)?.type);
+    const type = attributesType.find((attribute) => attribute.name === column)?.type;
+    if (type) {
+      setValue(type);
+    }
   }, [attributesType, column]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
