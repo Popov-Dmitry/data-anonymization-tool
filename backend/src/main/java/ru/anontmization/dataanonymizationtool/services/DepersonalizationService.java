@@ -1,6 +1,5 @@
 package ru.anontmization.dataanonymizationtool.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
+import ru.anontmization.dataanonymizationtool.dto.Enum.MaskMethods;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -30,6 +30,7 @@ public class DepersonalizationService {
     private LocalDateTime timeStart;
 
     private final ControllerDataBaseService controllerDB;
+    private final StatisticService statisticService;
 
     private List<MaskItem> methods = new ArrayList<>();
 
@@ -61,6 +62,8 @@ public class DepersonalizationService {
         ObjectMapper mapper = new ObjectMapper();
         JSONArray methodsJSON = new JSONArray(json);
 
+        statisticService.setStatistic();
+
         for (int i = 0; i < methodsJSON.length(); i++) {
 
             JSONObject method = methodsJSON.getJSONObject(i);
@@ -87,8 +90,12 @@ public class DepersonalizationService {
             if (allMethods.contains(methodName)) {
                 String params = method.getJSONObject("params").toString();
                 try {
-                    methods.add((MaskItem) mapper.readValue(params, Class.forName("ru.anontmization.dataanonymizationtool.Methods.options.type." + methodName)));
-                } catch (ClassNotFoundException | JsonProcessingException e) {
+                    MaskItem maskItem = (MaskItem) mapper.readValue(params, MaskMethods.valueOf(methodName).getMethodClass());
+
+                    statisticService.setNotMaskStatistic(maskItem, methodName);
+
+                    methods.add(maskItem);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -147,6 +154,9 @@ public class DepersonalizationService {
         long end = System.currentTimeMillis();
         status = Status.DONE;
         NumberFormat formatter = new DecimalFormat("#0.00");
+
+        methods.forEach( item -> statisticService.setMaskStatistic(item, item.getClass().getSimpleName()));
+
         return formatter.format((end - start) / 1000d).replace(",", ".");
     }
 

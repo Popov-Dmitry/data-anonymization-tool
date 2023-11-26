@@ -8,6 +8,7 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 @Data
@@ -25,6 +26,11 @@ public class ValueVariance implements MaskItem{
     @Override
     public String getTable() {
         return nameTable;
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(nameColumn);
     }
 
     @Override

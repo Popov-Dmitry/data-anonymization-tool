@@ -7,6 +7,7 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,11 @@ public class GeneralizationValue implements MaskItem {
     @Override
     public String getTable() {
         return nameTable;
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(nameColumn);
     }
 
     @Override
@@ -74,13 +80,6 @@ public class GeneralizationValue implements MaskItem {
 
         controllerDB.getStatement().execute(
                 "ALTER TABLE "+nameTable+" RENAME COLUMN "+isChangeNameColumn+" TO "+nameColumn+";"
-        );
-
-
-        controllerDB.getStatement().execute(
-                "ALTER TABLE "+nameTable+
-                        " RENAME "+nameColumn+
-                        " TO id_"+generalizationTable+";"
         );
     }
 }

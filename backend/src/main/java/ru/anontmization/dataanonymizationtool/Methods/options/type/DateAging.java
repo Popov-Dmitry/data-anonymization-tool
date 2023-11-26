@@ -8,6 +8,8 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +21,11 @@ public class DateAging implements MaskItem {
     @Override
     public String getTable() {
         return nameTable;
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(nameColumn);
     }
 
     @Override

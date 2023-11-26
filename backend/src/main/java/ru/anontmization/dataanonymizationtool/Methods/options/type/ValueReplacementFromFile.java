@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Data
@@ -24,6 +25,11 @@ public class ValueReplacementFromFile implements MaskItem {
     @Override
     public String getTable() {
         return nameTable;
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(nameColumn);
     }
 
     @Override

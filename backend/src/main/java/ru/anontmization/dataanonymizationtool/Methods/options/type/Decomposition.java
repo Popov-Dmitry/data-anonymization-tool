@@ -9,6 +9,7 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,11 @@ public class Decomposition implements MaskItem {
     @Override
     public String getTable() {
         return nameTable;
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(nameColumn);
     }
 
     @Override

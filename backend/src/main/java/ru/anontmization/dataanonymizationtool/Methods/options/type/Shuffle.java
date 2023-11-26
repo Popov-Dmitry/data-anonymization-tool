@@ -9,6 +9,7 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 @Data
@@ -26,6 +27,11 @@ public class Shuffle implements MaskItem{
         for (String str : strArr)
             sb.append(str).append(delimiter);
         return sb.substring(0, sb.length() - 1);
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(namesColumn);
     }
 
     @Override

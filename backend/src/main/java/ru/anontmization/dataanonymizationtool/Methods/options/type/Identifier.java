@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +29,11 @@ public class Identifier implements MaskItem {
         for (String str : strArr)
             sb.append(str).append(",");
         return sb.append(idTable).substring(0, sb.length());
+    }
+
+    @Override
+    public List<String> getColum() {
+        return List.of(namesColumn);
     }
 
     @Override
