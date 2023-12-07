@@ -14,9 +14,9 @@ interface IGeneralizationStringData {
 
 export interface IGeneralizationValue {
   generalizationTable: string;
-  generalizationName: string[];
-  minValue: string[];
-  maxValue: string[];
+  generalizationName: string[][];
+  minValue: string[][];
+  maxValue: string[][];
   isDate: boolean
 }
 

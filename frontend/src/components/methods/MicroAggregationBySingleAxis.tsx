@@ -22,7 +22,7 @@ export interface IMicroAggregationBySingleAxis {
 const MicroAggregationBySingleAxis = ({ columns }: IMicroAggregationData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
-  const [data, setData] = useState<IMicroAggregationBySingleAxis[]>([]);
+  const [data, setData] = useState<IMicroAggregationBySingleAxis[][]>([[]]);
   const { addData, isTriggered } = useMethodsInputs();
 
   useEffect(() => {
