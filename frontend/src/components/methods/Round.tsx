@@ -45,7 +45,7 @@ const Round = ({ column }: IDateAgingData) => {
           label="Точность"
           type="number"
           value={precision}
-          onChange={(event) => setPrecision(parseInt(event.target.value))}
+          onChange={(event) => setPrecision(parseFloat(event.target.value))}
         />
       )}
     </div>

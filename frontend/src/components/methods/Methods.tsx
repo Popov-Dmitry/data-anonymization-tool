@@ -132,15 +132,6 @@ const Methods = ({ columns }: IMethodsData) => {
               </Accordion>
             ))}
           </div>
-          <div className={bem("button")}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => setShowApplyMethodsModal(true)}
-            >
-              Обезличить
-            </Button>
-          </div>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <div>
@@ -159,16 +150,16 @@ const Methods = ({ columns }: IMethodsData) => {
             </Accordion>
             <RiskAssessmentMethod />
           </div>
-          <div className={bem("button")}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => setShowApplyMethodsModal(true)}
-            >
-              Оценить риски
-            </Button>
-          </div>
         </CustomTabPanel>
+        <div className={bem("button")}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => setShowApplyMethodsModal(true)}
+          >
+            Запуск
+          </Button>
+        </div>
       </div>
       <ApplyMethodsModal
         show={showApplyMethodsModal}

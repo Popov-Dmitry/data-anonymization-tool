@@ -70,7 +70,7 @@ const ValueVariance = ({ column }: IValueVarianceData) => {
             label="Процент"
             type="number"
             value={percent}
-            onChange={(event) => setPercent(parseInt(event.target.value))}
+            onChange={(event) => setPercent(parseFloat(event.target.value))}
           />
         </div>
       )}

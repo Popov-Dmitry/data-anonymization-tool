@@ -72,7 +72,7 @@ const IdentifierInputsModal = ({ columns, show, onHide, saveData, className = ""
                 variant="standard"
                 label="Имя новой таблицы"
                 type="text"
-                className="flex-1"
+                sx={{width: 250}}
                 required
                 value={item.newNameTable}
                 onChange={(event) => setData(data.map((v, i) => i === index ? { ...item, newNameTable: event.target.value } : v))}
