@@ -83,8 +83,14 @@ const GeneralizationValueInputsModal = ({
       ? generalizationName.filter((_, i) => i !== levelIndex)
       : generalizationName.map((value, li) => li === levelIndex ? value.filter((_, i) => i !== index) : value)
     );
-    setMinValue(minValue.filter((_, i) => i !== index));
-    setMaxValue(maxValue.filter((_, i) => i !== index));
+    setMinValue(minValue[levelIndex].length === 1
+      ? minValue.filter((_, i) => i !== levelIndex)
+      : minValue.map((value, li) => li === levelIndex ? value.filter((_, i) => i !== index) : value)
+    );
+    setMaxValue(maxValue[levelIndex].length === 1
+      ? maxValue.filter((_, i) => i !== levelIndex)
+      : maxValue.map((value, li) => li === levelIndex ? value.filter((_, i) => i !== index) : value)
+    );
   };
 
   return (

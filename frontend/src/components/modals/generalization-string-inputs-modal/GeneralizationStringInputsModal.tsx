@@ -1,12 +1,12 @@
 import "./GeneralizationStringInputsModal.scss";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { joinClassNames } from "../../../utils/join-class-names";
-import { Button, Modal, TextField, Typography } from "@mui/material";
+import { Button, IconButton, Modal, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { bemElement } from "../../../utils/bem-class-names";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useMethodsInputs } from "../../../providers/methods-inputs-provider";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { IGeneralizationString } from "../../methods/GeneralizationString";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const baseClassName = "generalization-string-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -38,14 +38,47 @@ const GeneralizationStringInputsModal = ({
   className = ""
 }: IGeneralizationStringInputsModal) => {
   const [generalizationTable, setGeneralizationTable] = useState<string>("");
-  const [data, setData] = useState<any>();
-  const [newKey, setNewKey] = useState<string>();
-  const [newValue, setNewValue] = useState<string>();
+  const [keys, setKeys] = useState<string[][]>([[""]]);
+  const [values, setValues] = useState<string[][]>([[""]]);
 
-  const isFormValid = data && Object.keys(data) && generalizationTable;
+  const onAddRowClick = () => {
+    setKeys(keys.map((key: string[], index: number) =>
+      (index === keys.length - 1 ? [...key, ""] : key)
+    ));
+    setValues(values.map((value: string[], index: number) =>
+      (index === values.length - 1 ? [...value, ""] : value)
+    ));
+  };
+
+  const onAddLevelClick = () => {
+    setKeys([...keys, [""]]);
+    setValues([...values, [""]]);
+  };
+
+  const onDeleteClick = (levelIndex: number, index: number) => {
+    setKeys(keys[levelIndex].length === 1
+      ? keys.filter((_, i) => i !== levelIndex)
+      : keys.map((value, li) => li === levelIndex ? value.filter((_, i) => i !== index) : value)
+    );
+    setValues(values[levelIndex].length === 1
+      ? values.filter((_, i) => i !== levelIndex)
+      : values.map((value, li) => li === levelIndex ? value.filter((_, i) => i !== index) : value)
+    );
+  };
+
+  const isFormValid = keys?.length === values?.length
+    && keys?.length > 0
+    && generalizationTable;
 
   const _onHide = () => {
     if (isFormValid) {
+      const data: any[] = [];
+      for (let i = 0; i < keys.length; i++) {
+        data[i] = {};
+        for (let j = 0; j < keys[i].length; j++) {
+          data[i][keys[i][j]] = values[i][j];
+        }
+      }
       saveData({
         generalizationTable,
         value: data
@@ -74,82 +107,73 @@ const GeneralizationStringInputsModal = ({
               onChange={(event) => setGeneralizationTable(event.target.value)}
             />
           </div>
-          {data && Object.keys(data).map((key) => (
-            <div className={bem("row")} key={key}>
-              <TextField
-                variant="outlined"
-                label="Из"
-                type="text"
-                fullWidth
-                defaultValue={key}
-                onBlur={(event) => {
-                  if (event.target.value !== key) {
-                    const newObject = {};
-                    delete Object.assign(newObject, data, { [event.target.value]: data[key] })[key];
-                    setData(newObject);
-                  }
-                }}
-              />
-              <ArrowForwardIcon color="action" />
-              <TextField
-                variant="outlined"
-                label="В"
-                type="text"
-                fullWidth
-                defaultValue={data[key]}
-                onBlur={(event) => {
-                  const newData = { ...data };
-                  newData.key = event.target.value;
-                  setData(newData);
-                }}
-              />
+          {keys.map((level, levelIndex) => (
+            <div key={levelIndex}>
+              <div className={bem("level")}>
+                {level.map((key, index) => (
+                  <div className={bem("row")} key={key}>
+                    <TextField
+                      variant="outlined"
+                      label="Из"
+                      type="text"
+                      fullWidth
+                      defaultValue={key}
+                      onChange={(event) => {
+                        setKeys(keys.map((l, i) =>
+                          (i === levelIndex ? l.map((n, i) => (i === index ? event.target.value : n)) : l)));
+                      }}
+                    />
+                    <ArrowForwardIcon color="action" />
+                    <TextField
+                      variant="outlined"
+                      label="В"
+                      type="text"
+                      fullWidth
+                      defaultValue={values[levelIndex][index]}
+                      onChange={(event) => {
+                        setValues(keys.map((l, i) =>
+                          (i === levelIndex ? l.map((n, i) => (i === index ? event.target.value : n)) : l)));
+                      }}
+                    />
+                    <IconButton
+                      color="primary"
+                      onClick={() => onDeleteClick(levelIndex, index)}
+                    >
+                      <DeleteIcon color="action" />
+                    </IconButton>
+                  </div>
+                ))}
+              </div>
+              <hr />
             </div>
           ))}
-          <div className={bem("row")}>
-            <TextField
-              variant="outlined"
-              label="Из"
-              type="text"
-              fullWidth
-              value={newKey}
-              onChange={(event) => setNewKey(event.target.value)}
-              onBlur={(event) => {
-                if (newValue) {
-                  const newData = { ...data };
-                  newData[event.target.value] = newValue;
-                  setData(newData);
-                  setNewKey("");
-                  setNewValue("");
-                }
-              }}
-            />
-            <ArrowForwardIcon color="action" />
-            <TextField
-              variant="outlined"
-              label="В"
-              type="text"
-              fullWidth
-              value={newValue}
-              onChange={(event) => setNewValue(event.target.value)}
-              onBlur={(event) => {
-                if (newKey) {
-                  const newData = { ...data };
-                  newData[newKey] = event.target.value;
-                  setData(newData);
-                  setNewKey("");
-                  setNewValue("");
-                }
-              }}
-            />
+          <div className={bem("buttons")}>
+            <div className={bem("buttons-left")}>
+              <Button
+                variant="outlined"
+                className="flex-1"
+                onClick={onAddRowClick}
+              >
+                Добавить строку
+              </Button>
+              <Button
+                variant="outlined"
+                className="flex-1"
+                onClick={onAddLevelClick}
+              >
+                Новый уровень
+              </Button>
+            </div>
+
+            <Button
+              variant="contained"
+              className="flex-2"
+              disabled={!isFormValid}
+              onClick={_onHide}
+            >
+              Готово
+            </Button>
           </div>
-          <Button
-            variant="contained"
-            className={bem("button")}
-            disabled={!isFormValid}
-            onClick={_onHide}
-          >
-            Готово
-          </Button>
         </div>
       </Box>
     </Modal>

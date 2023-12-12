@@ -27,7 +27,7 @@ interface IMicroAggregationInputsModal {
   columns: string[]
   show: boolean;
   onHide: () => void;
-  saveData: (data: IMicroAggregation[]) => void;
+  saveData: (data: IMicroAggregation[][]) => void;
   className?: string;
 }
 
@@ -37,10 +37,16 @@ const defaultSettings: IMicroAggregation = {
 };
 
 const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
-  const [data, setData] = useState<IMicroAggregation[]>([defaultSettings]);
+  const [data, setData] = useState<IMicroAggregation[][]>([[defaultSettings]]);
 
-  const onAddClick = () => {
-    setData([ ...data, defaultSettings ]);
+  const onAddRowClick = () => {
+    setData(data.map((value: IMicroAggregation[], index: number) =>
+        (index === data.length - 1 ? [...value, defaultSettings] : value)
+    ));
+  };
+
+  const onAddLevelClick = () => {
+    setData([...data, [defaultSettings]]);
   };
 
   const onDeleteClick = (index: number) => {
@@ -48,7 +54,7 @@ const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, classNam
   };
 
   const isFormValid = data.length > 0
-    && data.filter((item) => item.k > 0 && item.namesColumn.length > 0).length === data.length;
+      && data.filter((item) => item.filter(item => item.k > 0 && item.namesColumn.length > 0)).length === data.length;
 
   const _onHide = () => {
     if (isFormValid) {
@@ -66,47 +72,64 @@ const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, classNam
       <Box sx={style}>
         <Typography variant="h6">Микроагрегация</Typography>
         <div className={bem("content")}>
-          {data.map((item, index) => (
-            <div key={index} className={bem("row")}>
-              <TextField
-                variant="standard"
-                label="k"
-                type="number"
-                required
-                value={item.k}
-                onChange={(event) => {
-                  setData(data.map((v, i) =>
-                    (i === index ? { ...v, k: parseInt(event.target.value) } : v)))
-                }}
-                sx={{width: 50}}
-              />
-              <MultiSelect
-                options={columns}
-                value={item.namesColumn}
-                placeholder="Выберете столбцы"
-                fullWidth
-                onChange={(value) => {
-                  setData(data.map((v, i) =>
-                    (i === index ? { ...v, columns: value } : v)))
-                }}
-              />
-              <IconButton
-                color="primary"
-                onClick={() => onDeleteClick(index)}
-              >
-                <DeleteIcon color="action" />
-              </IconButton>
-            </div>
+          {data.map((level: IMicroAggregation[], levelIndex: number) => (
+              <div key={levelIndex}>
+                <div className={bem("level")}>
+                  {level.map((item: IMicroAggregation, index: number) => (
+                      <div key={index} className={bem("row")}>
+                        <TextField
+                            variant="standard"
+                            label="k"
+                            type="number"
+                            required
+                            value={item.k}
+                            onChange={(event) => {
+                              setData(data.map((l, i) =>
+                                  (i === levelIndex ? l.map((v, i) => (i === index ? { ...v, k: parseInt(event.target.value) } : v)) : l)));
+                            }}
+                            sx={{width: 50}}
+                        />
+                        <MultiSelect
+                            options={columns}
+                            value={item.namesColumn}
+                            placeholder="Выберете столбцы"
+                            fullWidth
+                            onChange={(value) => {
+                              setData(data.map((l, i) =>
+                                  (i === levelIndex ? l.map((v, i) => (i === index ? { ...v, namesColumn: value } : v)) : l)));
+                            }}
+                        />
+                        <IconButton
+                            color="primary"
+                            onClick={() => onDeleteClick(index)}
+                        >
+                          <DeleteIcon color="action" />
+                        </IconButton>
+                      </div>
+                  ))}
+                </div>
+                <hr />
+              </div>
           ))}
         </div>
         <div className={bem("buttons")}>
-          <Button
-            variant="outlined"
-            className="flex-1"
-            onClick={onAddClick}
-          >
-            Добавить
-          </Button>
+          <div className={bem("buttons-left")}>
+            <Button
+                variant="outlined"
+                className="flex-1"
+                onClick={onAddRowClick}
+            >
+              Добавить строку
+            </Button>
+            <Button
+                variant="outlined"
+                className="flex-1"
+                onClick={onAddLevelClick}
+            >
+              Новый уровень
+            </Button>
+          </div>
+
           <Button
             variant="contained"
             className="flex-2"

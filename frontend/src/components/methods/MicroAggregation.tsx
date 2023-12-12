@@ -20,7 +20,7 @@ export interface IMicroAggregation {
 const MicroAggregation = ({ columns }: IMicroAggregationData) => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
-  const [data, setData] = useState<IMicroAggregation[]>([]);
+  const [data, setData] = useState<IMicroAggregation[][]>([]);
   const { addData, isTriggered } = useMethodsInputs();
 
   useEffect(() => {
