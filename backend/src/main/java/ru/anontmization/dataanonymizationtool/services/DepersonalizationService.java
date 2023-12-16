@@ -1,5 +1,7 @@
 package ru.anontmization.dataanonymizationtool.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
+import ru.anontmization.dataanonymizationtool.dto.AttributeTypeDto;
 import ru.anontmization.dataanonymizationtool.dto.Enum.MaskMethods;
 import ru.anontmization.dataanonymizationtool.dto.RiskDto;
 
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -176,6 +180,9 @@ public class DepersonalizationService {
     private void setRisk(JSONObject riskJSON){
         RiskDto risk = new RiskDto();
 
+        controllerDB.setSensitive(getAttributeRisk(riskJSON.getJSONArray("sensitive")));
+        controllerDB.setQuasiIdentifier(getAttributeRisk(riskJSON.getJSONArray("quasiIdentifier")));
+
         risk.setName(riskJSON.getString("methodRisk"));
         double proportion = 0;
         try {
@@ -188,7 +195,18 @@ public class DepersonalizationService {
         risk.setProportion(proportion);
 
         statisticService.setRiskMethod(risk);
+    }
 
+    private List<AttributeTypeDto> getAttributeRisk(JSONArray attributes){
+        List<AttributeTypeDto> list = new ArrayList<>();
+        AttributeTypeDto attribute;
 
+        for (int i = 0; i < attributes.length(); i++) {
+            attribute = new AttributeTypeDto();
+            attribute.setTable(attributes.getJSONObject(i).getString("table"));
+            attribute.setColumn(attributes.getJSONObject(i).getString("column"));
+            list.add(attribute);
+        }
+        return list;
     }
 }

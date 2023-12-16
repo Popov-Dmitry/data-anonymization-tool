@@ -5,11 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import ru.anontmization.dataanonymizationtool.dto.AttributeTypeDto;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Data
@@ -21,10 +21,12 @@ public class ControllerDataBaseService {
     private String password;
     private Connection connection;
     private Statement statement;
+    List<AttributeTypeDto> sensitive;
+    List<AttributeTypeDto> quasiIdentifier;
 
     public boolean checkConnection() {
         try {
-            connection = DriverManager.getConnection(url+nameDB,userName,password);
+            connection = DriverManager.getConnection(url + nameDB, userName, password);
             statement = connection.createStatement();
             connection.close();
         } catch (SQLException e) {
@@ -33,9 +35,10 @@ public class ControllerDataBaseService {
 
         return true;
     }
+
     public void connect() {
         try {
-            connection = DriverManager.getConnection(url+nameDB,userName,password);
+            connection = DriverManager.getConnection(url + nameDB, userName, password);
             statement = connection.createStatement(
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE
@@ -45,7 +48,7 @@ public class ControllerDataBaseService {
         }
     }
 
-    public void disconnect(){
+    public void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
@@ -53,7 +56,7 @@ public class ControllerDataBaseService {
         }
     }
 
-    public void statementExecute(String sql){
+    public void statementExecute(String sql) {
         try {
             statement.execute(sql);
         } catch (SQLException e) {
@@ -61,7 +64,7 @@ public class ControllerDataBaseService {
         }
     }
 
-    public String getTableNames(){
+    public String getTableNames() {
         connect();
         ResultSet resultSet;
         StringBuilder tables = new StringBuilder();
@@ -70,10 +73,10 @@ public class ControllerDataBaseService {
 
         try {
             resultSet = statement.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';");
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 if (!isStart) {
                     tables.append(",");
-                }else{
+                } else {
                     isStart = false;
                 }
                 tables.append("\"").append(resultSet.getString(1)).append("\"");
@@ -85,11 +88,11 @@ public class ControllerDataBaseService {
         return tables.append("]").toString();
     }
 
-    public String getTable(String name){
+    public String getTable(String name) {
         connect();
         JSONArray result = new JSONArray();
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+name+";");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + name + ";");
             ResultSetMetaData md = resultSet.getMetaData();
             int numCols = md.getColumnCount();
             List<String> colNames = IntStream.range(0, numCols)
@@ -121,21 +124,26 @@ public class ControllerDataBaseService {
         return result.toString();
     }
 
-    public List<String[]> getTableLikeList(String table, List<String> column){
+    public List<String[]> getTableLikeList(String table, List<String> column) {
         List<String[]> source = new ArrayList<>();
         ArrayList<String> row;
 
         connect();
+        AttributeTypeDto attributeTypeDto = new AttributeTypeDto();
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+table+";");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table + ";");
             while (resultSet.next()) {
                 row = new ArrayList<>();
                 ArrayList<String> finalRow = row;
                 column.forEach(cn -> {
                     try {
-                        Object value = resultSet.getObject(cn);
-                        if (value != null) finalRow.add(value.toString());
-                        else finalRow.add("NULL");
+                        attributeTypeDto.setTable(table);
+                        attributeTypeDto.setColumn(cn);
+                        if (quasiIdentifier.contains(attributeTypeDto) || sensitive.contains(attributeTypeDto)){
+                            Object value = resultSet.getObject(cn);
+                            if (value != null) finalRow.add(value.toString());
+                            else finalRow.add("NULL");
+                        }
                     } catch (JSONException | SQLException e) {
                         e.printStackTrace();
                     }

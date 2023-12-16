@@ -1,7 +1,6 @@
 package ru.anontmization.dataanonymizationtool.dto.mask;
 
 import lombok.Data;
-import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 
 @Data
 public class DecompositionDto {
