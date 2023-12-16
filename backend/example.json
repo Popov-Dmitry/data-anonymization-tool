@@ -1,5 +1,26 @@
 [
   {
+    "methodRisk" : "GlobalRisk",
+    "proportion" : 0.2,
+    "sensitive" : [
+      {
+        "table" : "city",
+        "column" : "name_city"
+      },
+      {
+        "table" : "mkb10",
+        "column" : "mkb10"
+      }
+    ],
+    "quasiIdentifier" : [
+      {
+        "table" : "population",
+        "column" : "years"
+      }
+    ]
+
+  },
+  {
     "method" : "Shuffle",
     "params" : {
       "nameTable" : "condition",
