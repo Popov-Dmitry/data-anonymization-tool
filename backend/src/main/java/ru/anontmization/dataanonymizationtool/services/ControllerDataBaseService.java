@@ -7,7 +7,9 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Data
@@ -117,6 +119,34 @@ public class ControllerDataBaseService {
         }
         disconnect();
         return result.toString();
+    }
+
+    public List<String[]> getTableLikeList(String table, List<String> column){
+        List<String[]> source = new ArrayList<>();
+        ArrayList<String> row;
+
+        connect();
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+table+";");
+            while (resultSet.next()) {
+                row = new ArrayList<>();
+                ArrayList<String> finalRow = row;
+                column.forEach(cn -> {
+                    try {
+                        Object value = resultSet.getObject(cn);
+                        if (value != null) finalRow.add(value.toString());
+                        else finalRow.add("NULL");
+                    } catch (JSONException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+                source.add(row.toArray(new String[0]));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        disconnect();
+        return source;
     }
 
     @Override

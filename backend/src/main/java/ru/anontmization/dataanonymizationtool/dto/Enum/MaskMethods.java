@@ -3,6 +3,7 @@ package ru.anontmization.dataanonymizationtool.dto.Enum;
 import lombok.Getter;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
 
+@Getter
 public enum MaskMethods {
     DateAging("DateAging", DateAging.class),
     Decomposition("Decomposition", Decomposition.class),
@@ -18,9 +19,7 @@ public enum MaskMethods {
     ValueReplacementFromFile("ValueReplacementFromFile", ValueReplacementFromFile.class),
     ValueVariance("ValueVariance", ValueVariance.class);
 
-    @Getter
     final String name;
-    @Getter
     final Class<?> methodClass;
 
     MaskMethods(String name, Class<?> methodClass) {

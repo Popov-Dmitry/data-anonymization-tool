@@ -15,4 +15,5 @@ public class StatisticResponseDto {
     private BigDecimal MSE;
     private BigDecimal MD;
     private BigDecimal Shannon;
+    private Double risk;
 }

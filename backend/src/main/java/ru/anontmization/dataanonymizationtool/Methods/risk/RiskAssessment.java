@@ -65,7 +65,7 @@ public class RiskAssessment {
         return sumResult * proportion / value;
     }
 
-    public static double calculateGlobalRisk(Map<String[], Integer> equivalenceClasses, double proportion, int n) {
+    public static double calculateGlobalRisk(Map<String[], Integer> equivalenceClasses, double proportion, long n) {
         return calculateRiskWithoutIdentificationTable(equivalenceClasses, proportion)
                 .entrySet()
                 .stream()

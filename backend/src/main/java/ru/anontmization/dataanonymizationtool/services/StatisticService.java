@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
+import ru.anontmization.dataanonymizationtool.dto.Enum.RiskEnum;
+import ru.anontmization.dataanonymizationtool.dto.RiskDto;
 import ru.anontmization.dataanonymizationtool.dto.StatisticDto;
 import ru.anontmization.dataanonymizationtool.dto.StatisticResponseDto;
+import ru.anontmization.dataanonymizationtool.utils.EquivalenceClasses;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -14,6 +17,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static ru.anontmization.dataanonymizationtool.Methods.risk.RiskAssessment.*;
 
 @Data
 @Service
@@ -21,6 +27,7 @@ import java.util.List;
 public class StatisticService {
 
     private final ControllerDataBaseService controllerDB;
+    private RiskDto riskMethod;
 
     private String table;
     private String column;
@@ -33,6 +40,7 @@ public class StatisticService {
     private List<StatisticDto> statisticNotMask;
     private List<StatisticDto> statisticMask;
 
+    private StatisticResponseDto result;
     {
         methodsForStatistic = new ArrayList<>(
                 Arrays.asList(
@@ -54,11 +62,15 @@ public class StatisticService {
     }
 
     public void setStatistic(){
+        result = null;
+        countExtraStatic = 0;
         statisticNotMask = new ArrayList<>();
         statisticMask = new ArrayList<>();
     }
 
     public StatisticResponseDto getStatistic(){
+        if (result != null) return result;
+
         double min = 0;
         double max = 0;
         double avg = 0;
@@ -66,7 +78,7 @@ public class StatisticService {
         double MSE = 0;
         double MD = 0;
         double Shannon = 0;
-        countExtraStatic /= 2;
+        double risk = 0;
 
         for (int i = 0; i < statisticMask.size(); i++) {
             min += calculatePercent(statisticMask.get(i).getMin(), statisticNotMask.get(i).getMin());
@@ -76,35 +88,65 @@ public class StatisticService {
             MSE += calculatePercent(statisticMask.get(i).getMSE(), statisticNotMask.get(i).getMSE());
             MD += calculatePercent(statisticMask.get(i).getMD(), statisticNotMask.get(i).getMD());
             Shannon += calculatePercent(statisticMask.get(i).getShannon(), statisticNotMask.get(i).getShannon());
+            risk += statisticMask.get(i).getRisk();
         }
 
-        return StatisticResponseDto
-                .builder()
-                .min(BigDecimal.valueOf(min/countExtraStatic))
-                .max(BigDecimal.valueOf(max/countExtraStatic))
-                .avg(BigDecimal.valueOf(avg/countExtraStatic))
-                .RMSE(BigDecimal.valueOf(RMSE/countExtraStatic))
-                .MSE(BigDecimal.valueOf(MSE/countExtraStatic))
-                .MD(BigDecimal.valueOf(MD/countExtraStatic))
+        StatisticResponseDto.StatisticResponseDtoBuilder responseDto = StatisticResponseDto.builder();
+
+        if (countExtraStatic != 0){
+            responseDto
+                    .min(BigDecimal.valueOf(min/countExtraStatic))
+                    .max(BigDecimal.valueOf(max/countExtraStatic))
+                    .avg(BigDecimal.valueOf(avg/countExtraStatic))
+                    .RMSE(BigDecimal.valueOf(RMSE/countExtraStatic))
+                    .MSE(BigDecimal.valueOf(MSE/countExtraStatic))
+                    .MD(BigDecimal.valueOf(MD/countExtraStatic));
+        } else {
+            responseDto
+                    .min(null)
+                    .max(null)
+                    .avg(null)
+                    .RMSE(null)
+                    .MSE(null)
+                    .MD(null);
+        }
+        result = responseDto
                 .Shannon(BigDecimal.valueOf(Shannon/statisticMask.size()))
+                .risk(risk/statisticMask.size())
                 .build();
+
+        return result;
     }
 
     public void setNotMaskStatistic(MaskItem mask, String method){
         if (!methodsForStatistic.contains(method)) return;
-        statisticNotMask.addAll(getStatic(mask, method));
+        statisticNotMask.addAll(getStatic(mask, method, false));
     }
 
     public void setMaskStatistic(MaskItem mask, String method){
         if (!methodsForStatistic.contains(method)) return;
-        statisticMask.addAll(getStatic(mask, method));
+        statisticMask.addAll(getStatic(mask, method, true));
     }
 
-    private List<StatisticDto> getStatic(MaskItem mask, String method){
+    private List<StatisticDto> getStatic(MaskItem mask, String method, boolean isMask){
         List<StatisticDto> list = new ArrayList<>();
-
         table = mask.getTable();
+        double risk = 0;
+        if(isMask){
+            List<String[]> tableList = controllerDB.getTableLikeList(table, mask.getColum());
+            long size = tableList.size();
+
+            Map<String[], Integer> equivalence = EquivalenceClasses.execute(tableList);
+            switch (RiskEnum.findByName(riskMethod.getName())){
+                case PROSECUTOR_METRIC_A -> risk = calculateProsecutorMetricA(equivalence, size, riskMethod.getProportion());
+                case PROSECUTOR_METRIC_B -> risk = calculateProsecutorMetricB(equivalence);
+                case PROSECUTOR_METRIC_C -> risk = calculateProsecutorMetricC(equivalence, size);
+                case GLOBAL_RISK -> risk =calculateGlobalRisk(equivalence, riskMethod.getProportion(), size);
+            }
+        }
+
         controllerDB.connect();
+        double finalRisk = risk;
         mask.getColum().forEach(
                 col -> {
                     column = col;
@@ -112,9 +154,10 @@ public class StatisticService {
                             .builder()
                             .table(table)
                             .column(column)
-                            .Shannon(getShannon());
+                            .Shannon(getShannon())
+                            .risk(finalRisk);
                     if (methodsForStatisticExtra.contains(method)) {
-                        countExtraStatic++;
+                        if(isMask) countExtraStatic++;
                         statisticBuilder
                                 .min(getMin())
                                 .max(getMax())

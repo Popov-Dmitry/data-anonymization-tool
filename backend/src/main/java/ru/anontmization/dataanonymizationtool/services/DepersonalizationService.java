@@ -3,12 +3,14 @@ package ru.anontmization.dataanonymizationtool.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import ru.anontmization.dataanonymizationtool.Methods.controllers.ControllerDB;
 import ru.anontmization.dataanonymizationtool.Methods.options.MaskItem;
 import ru.anontmization.dataanonymizationtool.Methods.options.type.*;
 import ru.anontmization.dataanonymizationtool.dto.Enum.MaskMethods;
+import ru.anontmization.dataanonymizationtool.dto.RiskDto;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -64,7 +66,8 @@ public class DepersonalizationService {
 
         statisticService.setStatistic();
 
-        for (int i = 0; i < methodsJSON.length(); i++) {
+        setRisk(methodsJSON.getJSONObject(0));
+        for (int i = 1; i < methodsJSON.length(); i++) {
 
             JSONObject method = methodsJSON.getJSONObject(i);
             String methodName = method.getString("method");
@@ -155,6 +158,7 @@ public class DepersonalizationService {
         status = Status.DONE;
         NumberFormat formatter = new DecimalFormat("#0.00");
 
+        statisticService.setCountExtraStatic(0);
         methods.forEach( item -> statisticService.setMaskStatistic(item, item.getClass().getSimpleName()));
 
         return formatter.format((end - start) / 1000d).replace(",", ".");
@@ -167,5 +171,24 @@ public class DepersonalizationService {
     public String getStatus() {
         return "{\"status\" : \"" +status.name() + "\","+
                 "\"timeStart\" : \"" +timeStart + "\"}";
+    }
+
+    private void setRisk(JSONObject riskJSON){
+        RiskDto risk = new RiskDto();
+
+        risk.setName(riskJSON.getString("methodRisk"));
+        double proportion = 0;
+        try {
+            proportion = riskJSON.getDouble("proportion");
+        }catch (JSONException ignored){}
+        try {
+            proportion = riskJSON.getDouble("threshold");
+        }catch (JSONException ignored){}
+
+        risk.setProportion(proportion);
+
+        statisticService.setRiskMethod(risk);
+
+
     }
 }
