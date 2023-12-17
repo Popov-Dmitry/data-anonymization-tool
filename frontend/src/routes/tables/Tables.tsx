@@ -1,39 +1,38 @@
 import "./Tables.scss";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { List, ListItem, ListItemButton, Typography } from "@mui/material";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
 import { bemElement } from "../../utils/bem-class-names";
 import { Helmet } from "react-helmet";
+import { useAxios } from "../../providers/axios-provider";
 
 const baseClassName = "tables-page";
 const bem = bemElement(baseClassName);
 
-const tablesMock = [
-  {
-    name: "table 1"
-  },
-  {
-    name: "table 2"
-  },
-  {
-    name: "table 3"
-  },
-  {
-    name: "table 4"
-  },
-  {
-    name: "table 5"
-  }
-];
-
 const Tables = () => {
   const navigate = useNavigate();
   const { isConnected } = useDatabaseConnection();
+  const { api } = useAxios();
+  const [tables, setTables] = useState<string[]>([]);
 
-  if (!isConnected) {
-    navigate("/");
-  }
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await api.get("/tables");
+        setTables(response.data);
+      } catch (e: any) {
+        alert(e.message);
+        console.log(e);
+      }
+    })();
+  }, [api]);
+
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected, navigate]);
 
   return (
     <>
@@ -46,10 +45,10 @@ const Tables = () => {
           Выберите таблицу
         </Typography>
         <List>
-          {tablesMock.map((table) => (
+          {tables.map((table: string) => (
             <ListItem>
-              <ListItemButton onClick={() => navigate(`/tables/${table.name}`)}>
-                <Typography>{table.name}</Typography>
+              <ListItemButton onClick={() => navigate(`/tables/${table}`)}>
+                <Typography>{table}</Typography>
               </ListItemButton>
             </ListItem>
           ))}

@@ -1,63 +1,53 @@
 import "./Table.scss";
-import React, { useEffect } from "react";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate, useParams } from "react-router-dom";
 import Methods from "../../components/methods/Methods";
 import { bemElement } from "../../utils/bem-class-names";
 import { Helmet } from "react-helmet";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
+import { useAxios } from "../../providers/axios-provider";
+import { v4 as uuidv4 } from 'uuid';
 
 const baseClassName = "table-component";
 const bem = bemElement(baseClassName);
-
-const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 70 },
-  { field: "firstName", headerName: "First name", width: 130 },
-  { field: "lastName", headerName: "Last name", width: 130, editable: true },
-  {
-    field: "age",
-    headerName: "Age",
-    type: "number",
-    width: 90
-  },
-  {
-    field: "fullName",
-    headerName: "Full name",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ""} ${params.row.lastName || ""}`
-  }
-];
-
-const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 }
-];
 
 const Table = () => {
   const navigate = useNavigate();
   const { name } = useParams();
   const { isConnected } = useDatabaseConnection();
   const { setNameTable } = useMethodsInputs();
-  
+  const { api } = useAxios();
+  const [columns, setColumns] = useState<GridColDef[]>();
+  const [rows, setRows] = useState<any>();
+
   useEffect(() => {
     if (name) {
       setNameTable(name);
+      (async () => {
+        try {
+          const { data } =  await api.get(`/tables/${name}`);
+          if (data.length > 0) {
+            setRows(data);
+            setColumns(Object.keys(data[0]).map((key) => ({ field: key })));
+          }
+          console.log(data);
+        } catch (e: any) {
+          alert(e.message)
+        }
+      })();
     }
-  }, [name, setNameTable])
+  }, [api, name, setNameTable]);
 
-  if (!isConnected) {
-    navigate("/");
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected, navigate]);
+
+  if (!rows || !columns) {
+    return null;
   }
 
   return (
@@ -72,6 +62,7 @@ const Table = () => {
             rows={rows}
             columns={columns}
             editMode="row"
+            getRowId={() => uuidv4()}
           />
         </div>
         <Methods columns={columns.map((column) => column.field)} />

@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from "react";
 
+type TDatabase = "postgresql";
+
 export interface DatabaseConnectionData {
-  database: string;
+  database: TDatabase;
   server: string;
   port: string;
   username: string;
@@ -25,7 +27,7 @@ const DatabaseConnectionStateContext = React.createContext<
 
 export function DatabaseConnectionProvider(props: Props) {
   const { children } = props;
-  const [database, setDatabase] = useState<string>("postgresql");
+  const [database, setDatabase] = useState<TDatabase>("postgresql");
   const [server, setServer] = useState<string>("localhost");
   const [port, setPort] = useState<string>("5432");
   const [username, setUsername] = useState<string>("");
