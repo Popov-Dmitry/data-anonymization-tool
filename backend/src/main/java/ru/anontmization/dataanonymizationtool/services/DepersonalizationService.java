@@ -163,6 +163,7 @@ public class DepersonalizationService {
         NumberFormat formatter = new DecimalFormat("#0.00");
 
         statisticService.setCountExtraStatic(0);
+        statisticService.calculateRisk();
         methods.forEach( item -> statisticService.setMaskStatistic(item, item.getClass().getSimpleName()));
 
         return formatter.format((end - start) / 1000d).replace(",", ".");

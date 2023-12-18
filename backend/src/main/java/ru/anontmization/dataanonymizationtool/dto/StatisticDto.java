@@ -15,5 +15,4 @@ public class StatisticDto {
     private double MSE;
     private double MD;
     private double Shannon;
-    private double risk;
 }
