@@ -6,6 +6,7 @@ import DatabaseConnectionModal from "../../components/modals/database-connection
 import { DatabaseConnectionData, useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useAxios } from "../../providers/axios-provider";
 
 const baseClassName = "home-page";
 const bem = bemElement(baseClassName);
@@ -23,11 +24,23 @@ const Home = () => {
     updateDatabaseConnectionData,
     setIsConnected
   } = useDatabaseConnection();
+  const { api } = useAxios();
   const [showDatabaseConnectionModal, setShowDatabaseConnectionModal] = useState<boolean>(false);
 
-  const onApply = (values: DatabaseConnectionData) => {
+  const onApply = async (values: DatabaseConnectionData) => {
     updateDatabaseConnectionData(values);
-    setIsConnected(true);
+    try {
+      await api.post("/settings", {
+        url: `jdbc:${values.database}://${values.server}:${values.port}/`,
+        nameDB: values.databaseName,
+        user: values.username,
+        password: values.password,
+      });
+      setIsConnected(true);
+    } catch (e: any) {
+      alert(e.message);
+      console.log(e);
+    }
   };
 
   if (isConnected) {

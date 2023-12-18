@@ -9,6 +9,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import DatabaseConnectionModal from "../modals/database-connection-modal/DatabaseConnectionModal";
 import { useState } from "react";
+import { useAxios } from "../../providers/axios-provider";
 
 const menu = [
   {
@@ -34,11 +35,23 @@ export default function MenuAppBar() {
     updateDatabaseConnectionData,
     setIsConnected
   } = useDatabaseConnection();
+  const { api } = useAxios();
   const [showDatabaseConnectionModal, setShowDatabaseConnectionModal] = useState<boolean>(false);
 
-  const onApply = (values: DatabaseConnectionData) => {
+  const onApply = async (values: DatabaseConnectionData) => {
     updateDatabaseConnectionData(values);
-    setIsConnected(true);
+    try {
+      await api.post("/settings", {
+        url: `${values.database}://${values.server}:${values.port}`,
+        nameDB: values.databaseName,
+        user: values.username,
+        password: values.password,
+      });
+      setIsConnected(true);
+    } catch (e: any) {
+      alert(e.message);
+      console.log(e);
+    }
   };
 
   if (!isConnected) {

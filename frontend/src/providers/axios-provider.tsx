@@ -18,7 +18,7 @@ export function AxiosProvider(props: Props) {
   const { children } = props;
 
   const api = axios.create({
-    baseURL: "http://localhost:8080/api/v1",
+    baseURL: "http://localhost:9090/api/v1",
     headers: {
       accepts: "application/json",
       "content-type": "application/json"
