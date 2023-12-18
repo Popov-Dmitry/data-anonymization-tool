@@ -29,6 +29,7 @@ import ApplyMethodsModal from "../modals/apply-methods-modal/ApplyMethodsModal";
 import RiskAssessmentMethod from "../risk-assessment-method/RiskAssessmentMethod";
 import Attribute from "../attribute/Attribute";
 import { useRiskAssessment } from "../../providers/risk-assessment-provider";
+import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 
 const baseClassName = "methods";
 const bem = bemElement(baseClassName);
@@ -74,6 +75,7 @@ const Methods = ({ columns }: IMethodsData) => {
   const [showApplyMethodsModal, setShowApplyMethodsModal] = useState<boolean>(false);
   const [value, setValue] = React.useState(0);
   const { initAttributesType } = useRiskAssessment();
+  const { triggerDataCollecting } = useMethodsInputs();
 
   useEffect(() => {
     initAttributesType(columns);
@@ -84,7 +86,8 @@ const Methods = ({ columns }: IMethodsData) => {
   };
 
   const onApply = () => {
-
+    triggerDataCollecting();
+    setShowApplyMethodsModal(true);
   };
 
   return (
@@ -155,7 +158,7 @@ const Methods = ({ columns }: IMethodsData) => {
           <Button
             variant="contained"
             fullWidth
-            onClick={() => setShowApplyMethodsModal(true)}
+            onClick={onApply}
           >
             Запуск
           </Button>

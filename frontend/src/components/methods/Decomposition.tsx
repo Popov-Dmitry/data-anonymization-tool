@@ -36,7 +36,7 @@ const Decomposition = ({ column }: IDecompositionData) => {
   const { addData, isTriggered } = useMethodsInputs();
 
   useEffect(() => {
-    if (isTriggered && selected) {
+    if (isTriggered && selected && nameNewTable) {
       addData([{
         method: "Decomposition",
         params: {
