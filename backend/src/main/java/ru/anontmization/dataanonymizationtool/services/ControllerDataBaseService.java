@@ -64,28 +64,40 @@ public class ControllerDataBaseService {
         }
     }
 
-    public String getTableNames() {
+    public List<String> getTableNames() {
         connect();
         ResultSet resultSet;
-        StringBuilder tables = new StringBuilder();
-        boolean isStart = true;
-        tables.append("[");
+        List<String> tables = new ArrayList<>();
 
         try {
             resultSet = statement.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';");
             while (resultSet.next()) {
-                if (!isStart) {
-                    tables.append(",");
-                } else {
-                    isStart = false;
-                }
-                tables.append("\"").append(resultSet.getString(1)).append("\"");
+                tables.add(resultSet.getString(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         disconnect();
-        return tables.append("]").toString();
+        return tables;
+    }
+
+    public List<String> getColumnNames(String tableName) {
+        connect();
+        ResultSet resultSet;
+        List<String> columns = new ArrayList<>();
+
+        try {
+            resultSet = statement.executeQuery("SELECT * FROM "+tableName+";");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            for (int i = 1; i <= columnCount; i++ ) {
+                columns.add(metaData.getColumnName(i));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        disconnect();
+        return columns;
     }
 
     public String getTable(String name) {

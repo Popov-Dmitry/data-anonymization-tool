@@ -40,6 +40,8 @@ public class StatisticService {
     private List<StatisticDto> statisticNotMask;
     private List<StatisticDto> statisticMask;
 
+    private double riskResult;
+
     private StatisticResponseDto result;
     {
         methodsForStatistic = new ArrayList<>(
@@ -78,7 +80,6 @@ public class StatisticService {
         double MSE = 0;
         double MD = 0;
         double Shannon = 0;
-        double risk = 0;
 
         for (int i = 0; i < statisticMask.size(); i++) {
             min += calculatePercent(statisticMask.get(i).getMin(), statisticNotMask.get(i).getMin());
@@ -88,7 +89,6 @@ public class StatisticService {
             MSE += calculatePercent(statisticMask.get(i).getMSE(), statisticNotMask.get(i).getMSE());
             MD += calculatePercent(statisticMask.get(i).getMD(), statisticNotMask.get(i).getMD());
             Shannon += calculatePercent(statisticMask.get(i).getShannon(), statisticNotMask.get(i).getShannon());
-            risk += statisticMask.get(i).getRisk();
         }
 
         StatisticResponseDto.StatisticResponseDtoBuilder responseDto = StatisticResponseDto.builder();
@@ -112,7 +112,7 @@ public class StatisticService {
         }
         result = responseDto
                 .Shannon(BigDecimal.valueOf(Shannon/statisticMask.size()))
-                .risk(risk/statisticMask.size())
+                .risk(riskResult)
                 .build();
 
         return result;
@@ -128,25 +128,36 @@ public class StatisticService {
         statisticMask.addAll(getStatic(mask, method, true));
     }
 
-    private List<StatisticDto> getStatic(MaskItem mask, String method, boolean isMask){
-        List<StatisticDto> list = new ArrayList<>();
-        table = mask.getTable();
+    public void calculateRisk(){
+        List<String> tables = controllerDB.getTableNames();
         double risk = 0;
-        if(isMask){
-            List<String[]> tableList = controllerDB.getTableLikeList(table, mask.getColum());
+        int n = 0;
+
+        for (int i = 0; i < tables.size(); i++) {
+            List<String[]> tableList = controllerDB.getTableLikeList(tables.get(i), controllerDB.getColumnNames(tables.get(i)));
             long size = tableList.size();
+            if (tableList.isEmpty()) continue;
+            if (tableList.get(0).length == 0) continue;
 
             Map<String[], Integer> equivalence = EquivalenceClasses.execute(tableList);
             switch (RiskEnum.findByName(riskMethod.getName())){
-                case PROSECUTOR_METRIC_A -> risk = calculateProsecutorMetricA(equivalence, size, riskMethod.getProportion());
-                case PROSECUTOR_METRIC_B -> risk = calculateProsecutorMetricB(equivalence);
-                case PROSECUTOR_METRIC_C -> risk = calculateProsecutorMetricC(equivalence, size);
-                case GLOBAL_RISK -> risk =calculateGlobalRisk(equivalence, riskMethod.getProportion(), size);
+                case PROSECUTOR_METRIC_A -> risk += calculateProsecutorMetricA(equivalence, size, riskMethod.getProportion());
+                case PROSECUTOR_METRIC_B -> risk += calculateProsecutorMetricB(equivalence);
+                case PROSECUTOR_METRIC_C -> risk += calculateProsecutorMetricC(equivalence, size);
+                case GLOBAL_RISK -> risk += calculateGlobalRisk(equivalence, riskMethod.getProportion(), size);
             }
+            n++;
         }
 
+        if (n != 0) riskResult = risk/n;
+    }
+
+    private List<StatisticDto> getStatic(MaskItem mask, String method, boolean isMask){
+        List<StatisticDto> list = new ArrayList<>();
+        table = mask.getTable();
+
+
         controllerDB.connect();
-        double finalRisk = risk;
         mask.getColum().forEach(
                 col -> {
                     column = col;
@@ -154,8 +165,7 @@ public class StatisticService {
                             .builder()
                             .table(table)
                             .column(column)
-                            .Shannon(getShannon())
-                            .risk(finalRisk);
+                            .Shannon(getShannon());
                     if (methodsForStatisticExtra.contains(method)) {
                         if(isMask) countExtraStatic++;
                         statisticBuilder
