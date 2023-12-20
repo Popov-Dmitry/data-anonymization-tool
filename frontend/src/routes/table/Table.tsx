@@ -32,7 +32,6 @@ const Table = () => {
             setRows(data);
             setColumns(Object.keys(data[0]).map((key) => ({ field: key })));
           }
-          console.log(data);
         } catch (e: any) {
           alert(e.message)
         }

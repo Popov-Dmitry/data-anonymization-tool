@@ -40,6 +40,7 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-helmet": "^6.1.4",
     "@types/react-router-dom": "^5.3.1",
+    "@types/uuid": "^9.0.7",
     "autoprefixer": "^10.4.4",
     "dotenv": "^16.3.1",
     "improved-yarn-audit": "^3.0.0",
