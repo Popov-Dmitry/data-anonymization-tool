@@ -28,7 +28,6 @@ public class DepersonalizationController {
         service.setConfig(request);
     }
 
-
     @GetMapping("/start")
     public String startMasking() {
         if (controllerService.checkConnection()) {

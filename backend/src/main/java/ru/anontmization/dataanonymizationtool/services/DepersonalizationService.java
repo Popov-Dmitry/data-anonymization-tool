@@ -124,22 +124,18 @@ public class DepersonalizationService {
         timeStart = LocalDateTime.now();
         init();
         time = masking();
-        deinit();
+        controllerDB.disconnect();
+        controllerDB.disconnect();
         return time;
     }
 
     private void init() {
         String maskDB = "mask_" + controllerDB.getNameDB();
-
-        controllerDB.connect();
-
         controllerDB.statementExecute("DROP DATABASE IF EXISTS " + maskDB + ";");
         controllerDB.statementExecute(
                 "CREATE DATABASE " + maskDB
                         + " WITH TEMPLATE " + controllerDB.getNameDB()
                         + " OWNER " + controllerDB.getUserName() + ";");
-
-        controllerDB.disconnect();
         controllerDB.setNameDB(maskDB);
 
     }
@@ -169,10 +165,6 @@ public class DepersonalizationService {
         return formatter.format((end - start) / 1000d).replace(",", ".");
     }
 
-    private void deinit() {
-        controllerDB.disconnect();
-    }
-
     public String getStatus() {
         return "{\"status\" : \"" +status.name() + "\","+
                 "\"timeStart\" : \"" +timeStart + "\"}";
@@ -181,8 +173,21 @@ public class DepersonalizationService {
     private void setRisk(JSONObject riskJSON){
         RiskDto risk = new RiskDto();
 
-        controllerDB.setSensitive(getAttributeRisk(riskJSON.getJSONArray("sensitive")));
-        controllerDB.setQuasiIdentifier(getAttributeRisk(riskJSON.getJSONArray("quasiIdentifier")));
+        try {
+            controllerDB.setSensitive(getAttributeRisk(riskJSON.getJSONArray("sensitive")));
+        } catch (Exception e){
+            controllerDB.setSensitive(List.of());
+        }
+        try {
+            controllerDB.setIdentifier(getAttributeRisk(riskJSON.getJSONArray("identifier")));
+        } catch (Exception e){
+            controllerDB.setIdentifier(List.of());
+        }
+        try {
+            controllerDB.setQuasiIdentifier(getAttributeRisk(riskJSON.getJSONArray("quasiIdentifier")));
+        } catch (Exception e){
+            controllerDB.setQuasiIdentifier(List.of());
+        }
 
         risk.setName(riskJSON.getString("methodRisk"));
         double proportion = 0;

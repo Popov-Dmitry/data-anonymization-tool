@@ -84,9 +84,15 @@ public class Identifier implements MaskItem {
         );
 
         Arrays.stream(namesColumn).forEach(
-                column-> controllerDB.statementExecute(
-                        "ALTER TABLE "+nameTable+" DROP COLUMN "+column+";"
-                )
+                column-> {
+                    try {
+                        controllerDB.getStatement().execute(
+                                "ALTER TABLE "+nameTable+" DROP COLUMN "+column+";"
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
         );
         controllerDB.getStatement().execute(
                 "ALTER TABLE "+nameTable+" DROP COLUMN "+nameTempIdField+";"

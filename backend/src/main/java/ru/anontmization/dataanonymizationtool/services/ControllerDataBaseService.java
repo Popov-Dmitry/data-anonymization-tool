@@ -23,11 +23,12 @@ public class ControllerDataBaseService {
     private Statement statement;
     List<AttributeTypeDto> sensitive;
     List<AttributeTypeDto> quasiIdentifier;
+    List<AttributeTypeDto> identifier;
 
     public boolean checkConnection() {
         try {
             connection = DriverManager.getConnection(url + nameDB, userName, password);
-            statement = connection.createStatement();
+            connection.createStatement();
             connection.close();
         } catch (SQLException e) {
             return false;
@@ -57,13 +58,26 @@ public class ControllerDataBaseService {
     }
 
     public void statementExecute(String sql) {
+        connect();
         try {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        disconnect();
     }
 
+    public ResultSet statementExecuteQuery(String sql) {
+        ResultSet resultSet;
+        connect();
+        try {
+            resultSet = statement.executeQuery(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        disconnect();
+        return resultSet;
+    }
     public List<String> getTableNames() {
         connect();
         ResultSet resultSet;
@@ -139,11 +153,23 @@ public class ControllerDataBaseService {
     public List<String[]> getTableLikeList(String table, List<String> column) {
         List<String[]> source = new ArrayList<>();
         ArrayList<String> row;
+        boolean isEmpty = true;
 
         connect();
         AttributeTypeDto attributeTypeDto = new AttributeTypeDto();
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table + ";");
+            for (String s : column) {
+                try {
+                    attributeTypeDto.setTable(table);
+                    attributeTypeDto.setColumn(s);
+                    if (quasiIdentifier.contains(attributeTypeDto) || identifier.contains(attributeTypeDto)) {
+                        isEmpty = false;
+                    }
+                } catch (JSONException ignore) {}
+            }
+            if (isEmpty) return List.of();
+
+            ResultSet resultSet = statementExecuteQuery("SELECT * FROM " + table + ";");
             while (resultSet.next()) {
                 row = new ArrayList<>();
                 ArrayList<String> finalRow = row;
@@ -151,7 +177,8 @@ public class ControllerDataBaseService {
                     try {
                         attributeTypeDto.setTable(table);
                         attributeTypeDto.setColumn(cn);
-                        if (quasiIdentifier.contains(attributeTypeDto) || sensitive.contains(attributeTypeDto)){
+                        if(sensitive.contains(attributeTypeDto))return;
+                        if (quasiIdentifier.contains(attributeTypeDto) || identifier.contains(attributeTypeDto)){
                             Object value = resultSet.getObject(cn);
                             if (value != null) finalRow.add(value.toString());
                             else finalRow.add("NULL");

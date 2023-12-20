@@ -133,15 +133,16 @@ public class StatisticService {
         double risk = 0;
         int n = 0;
 
-        for (int i = 0; i < tables.size(); i++) {
-            List<String[]> tableList = controllerDB.getTableLikeList(tables.get(i), controllerDB.getColumnNames(tables.get(i)));
+        for (String s : tables) {
+            List<String[]> tableList = controllerDB.getTableLikeList(s, controllerDB.getColumnNames(s));
             long size = tableList.size();
             if (tableList.isEmpty()) continue;
             if (tableList.get(0).length == 0) continue;
 
             Map<String[], Integer> equivalence = EquivalenceClasses.execute(tableList);
-            switch (RiskEnum.findByName(riskMethod.getName())){
-                case PROSECUTOR_METRIC_A -> risk += calculateProsecutorMetricA(equivalence, size, riskMethod.getProportion());
+            switch (RiskEnum.findByName(riskMethod.getName())) {
+                case PROSECUTOR_METRIC_A ->
+                        risk += calculateProsecutorMetricA(equivalence, size, riskMethod.getProportion());
                 case PROSECUTOR_METRIC_B -> risk += calculateProsecutorMetricB(equivalence);
                 case PROSECUTOR_METRIC_C -> risk += calculateProsecutorMetricC(equivalence, size);
                 case GLOBAL_RISK -> risk += calculateGlobalRisk(equivalence, riskMethod.getProportion(), size);
@@ -156,8 +157,6 @@ public class StatisticService {
         List<StatisticDto> list = new ArrayList<>();
         table = mask.getTable();
 
-
-        controllerDB.connect();
         mask.getColum().forEach(
                 col -> {
                     column = col;
@@ -180,15 +179,13 @@ public class StatisticService {
                     list.add(statisticBuilder.build());
                 }
         );
-        controllerDB.disconnect();
-
         return list;
     }
 
     private double getMin(){
         ResultSet resultSet;
         try {
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT min("+column+") " +
                             "FROM "+table+";"
             );
@@ -203,7 +200,7 @@ public class StatisticService {
     private double getMax(){
         ResultSet resultSet;
         try {
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT max("+column+") " +
                             "FROM "+table+";"
             );
@@ -218,7 +215,7 @@ public class StatisticService {
     private double getAverage(){
         ResultSet resultSet;
         try {
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT avg("+column+") " +
                             "FROM "+table+";"
             );
@@ -238,7 +235,7 @@ public class StatisticService {
         ResultSet resultSet;
         try {
             double sumOfSquaredErrors = 0.0;
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT "+column +
                             " FROM "+table+";"
             );
@@ -260,7 +257,7 @@ public class StatisticService {
         ResultSet resultSet;
         try {
             double meanDeviation = 0.0;
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT "+column +
                             " FROM "+table+";"
             );
@@ -293,7 +290,7 @@ public class StatisticService {
         List<Integer> list = new ArrayList<>();
         ResultSet resultSet;
         try {
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT count(*) "+
                             "FROM "+table+" group by "+column+";"
             );
@@ -311,7 +308,7 @@ public class StatisticService {
     private int getCount(){
         ResultSet resultSet;
         try {
-            resultSet = controllerDB.getStatement().executeQuery(
+            resultSet = controllerDB.statementExecuteQuery(
                     "SELECT count("+column +") "+
                             "FROM "+table+";"
             );
