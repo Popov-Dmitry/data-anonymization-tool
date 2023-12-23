@@ -155,7 +155,6 @@ public class ControllerDataBaseService {
         ArrayList<String> row;
         boolean isEmpty = true;
 
-        connect();
         AttributeTypeDto attributeTypeDto = new AttributeTypeDto();
         try {
             for (String s : column) {
@@ -192,7 +191,6 @@ public class ControllerDataBaseService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        disconnect();
         return source;
     }
 
