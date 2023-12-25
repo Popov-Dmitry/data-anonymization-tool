@@ -36,7 +36,7 @@ public class MicroAggregationBySingleAxis implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         String nameIdField = "temp_id_group_by_micro_aggregation";
         String columnsRow = convertStringArrayToString(namesColumn, ",");
 

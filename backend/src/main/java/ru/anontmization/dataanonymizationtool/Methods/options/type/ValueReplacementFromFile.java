@@ -33,23 +33,19 @@ public class ValueReplacementFromFile implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         ArrayList<String> list = new ArrayList<>();
         File file = new File(nameFile);
 
 
         FileReader fr ;
         BufferedReader reader;
-        try {
-            fr = new FileReader(file);
-            reader = new BufferedReader(fr);
-            String line = reader.readLine();
-            while (line != null) {
-                list.add(line);
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        fr = new FileReader(file);
+        reader = new BufferedReader(fr);
+        String line = reader.readLine();
+        while (line != null) {
+            list.add(line);
+            line = reader.readLine();
         }
 
 

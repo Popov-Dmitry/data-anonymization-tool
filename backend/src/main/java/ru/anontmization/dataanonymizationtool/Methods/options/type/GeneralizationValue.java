@@ -31,7 +31,7 @@ public class GeneralizationValue implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         boolean date = isDate.equals("true");
 
 

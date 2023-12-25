@@ -31,7 +31,7 @@ public class Decomposition implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
 
 
         String tempId = "temp_id_by_decomposition";

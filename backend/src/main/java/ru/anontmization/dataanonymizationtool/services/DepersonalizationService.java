@@ -15,6 +15,7 @@ import ru.anontmization.dataanonymizationtool.dto.AttributeTypeDto;
 import ru.anontmization.dataanonymizationtool.dto.Enum.MaskMethods;
 import ru.anontmization.dataanonymizationtool.dto.RiskDto;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -148,7 +149,8 @@ public class DepersonalizationService {
         methods.forEach(item -> {
             try {
                 item.start(controllerDB);
-            } catch (SQLException e) {
+            } catch (Exception e) {
+                controllerDB.disconnect();
                 throw new RuntimeException(e);
             }
         });

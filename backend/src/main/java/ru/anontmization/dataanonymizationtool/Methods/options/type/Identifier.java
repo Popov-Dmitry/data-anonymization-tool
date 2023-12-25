@@ -37,7 +37,7 @@ public class Identifier implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         String nameTempIdField = "temp_id_by_identifier";
         int length;
 

@@ -153,7 +153,7 @@ public class MicroAggregation implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         int Xr;
         int Xs;
 

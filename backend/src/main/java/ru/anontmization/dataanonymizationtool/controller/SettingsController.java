@@ -18,10 +18,11 @@ public class SettingsController {
     }
 
     @PostMapping("")
-    public void setSettings(@RequestBody ControllerDto request){
+    public boolean setSettings(@RequestBody ControllerDto request){
         controllerService.setUrl(request.getUrl());
         controllerService.setNameDB(request.getNameDB());
         controllerService.setUserName(request.getUser());
         controllerService.setPassword(request.getPassword());
+        return controllerService.checkConnection();
     }
 }

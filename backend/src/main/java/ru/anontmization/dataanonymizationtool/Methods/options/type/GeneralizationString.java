@@ -28,7 +28,7 @@ public class GeneralizationString implements MaskItem {
     }
 
     @Override
-    public void start(ControllerDataBaseService controllerDB) throws SQLException {
+    public void start(ControllerDataBaseService controllerDB) throws Exception {
         controllerDB.getStatement().execute(
                 "DROP TABLE IF EXISTS "+generalizationTable+";"
         );
