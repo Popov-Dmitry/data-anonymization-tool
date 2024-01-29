@@ -147,7 +147,7 @@ const Methods = ({ columns }: IMethodsData) => {
               </AccordionSummary>
               <AccordionDetails className={bem("list-content")}>
                 {columns.map((column: string) => (
-                  <Attribute column={column} />
+                  <Attribute key={column} column={column} />
                 ))}
               </AccordionDetails>
             </Accordion>
