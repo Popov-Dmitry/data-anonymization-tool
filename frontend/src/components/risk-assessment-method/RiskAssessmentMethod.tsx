@@ -2,7 +2,11 @@ import React, { ChangeEvent } from "react";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { TRiskAssessmentMethod, useRiskAssessment } from "../../providers/risk-assessment-provider";
 
-const RiskAssessmentMethod = () => {
+interface IRiskAssessmentMethodData {
+  className?: string;
+}
+
+const RiskAssessmentMethod = ({ className }: IRiskAssessmentMethodData) => {
   const { method, setMethod } = useRiskAssessment();
 
   const handleChangeMethod = (event: SelectChangeEvent) => {
@@ -22,7 +26,7 @@ const RiskAssessmentMethod = () => {
   };
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth className={className}>
       <InputLabel>Метод оценки рисков раскрытия информации</InputLabel>
       <Select
         label="Метод оценки рисков раскрытия информации"

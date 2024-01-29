@@ -16,6 +16,7 @@ import {
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IMicroAggregationBySingleAxis } from "../../methods/MicroAggregationBySingleAxis";
+import { useAttributes } from "../../../providers/attributes-provider";
 
 const baseClassName = "micro-aggregation-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -34,7 +35,6 @@ const style = {
 };
 
 interface IMicroAggregationBySingleAxisInputsModal {
-  columns: string[];
   show: boolean;
   onHide: () => void;
   saveData: (data: IMicroAggregationBySingleAxis[]) => void;
@@ -42,12 +42,12 @@ interface IMicroAggregationBySingleAxisInputsModal {
 }
 
 const MicroAggregationBySingleAxisInputsModal = ({
-  columns,
   show,
   onHide,
   saveData,
   className = ""
 }: IMicroAggregationBySingleAxisInputsModal) => {
+  const { attributes } = useAttributes();
   const [kLevels, setKLevels] = useState<number[]>([1]);
   const [namesColumn, setNamesColumn] = useState<string[]>([]);
   const [axisColumn, setAxisColumn] = useState<string>("");
@@ -95,15 +95,15 @@ const MicroAggregationBySingleAxisInputsModal = ({
                 label="Осевой столбец"
                 onChange={(event) => setAxisColumn(event.target.value)}
               >
-                {columns.map((column: string) => (
+                {attributes.map((column: string) => (
                   <MenuItem key={column} value={column}>{column}</MenuItem>
                 ))}
               </Select>
             </FormControl>
             <MultiSelect
-              options={columns}
+              options={attributes}
               value={namesColumn}
-              placeholder="Выберете столбцы"
+              placeholder="Выберете атрибуты"
               fullWidth
               onChange={(value) => setNamesColumn(value)}
             />

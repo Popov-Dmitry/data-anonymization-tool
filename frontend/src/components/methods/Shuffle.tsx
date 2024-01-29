@@ -8,11 +8,7 @@ import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IShuffleData {
-  columns: string[];
-}
-
-const Shuffle = ({ columns }: IShuffleData) => {
+const Shuffle = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
   const [data, setData] = useState<string[][]>([]);
@@ -35,7 +31,7 @@ const Shuffle = ({ columns }: IShuffleData) => {
           label="Перемешивание"
         />
         <Tooltip title="Одобрено Роскомнадзором">
-          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+          <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
         </Tooltip>
       </div>
       {selected && (
@@ -49,7 +45,6 @@ const Shuffle = ({ columns }: IShuffleData) => {
         </Button>
       )}
       <ShuffleInputsModal
-        columns={columns}
         saveData={setData}
         show={showInputsModal}
         onHide={() => setShowInputsModal(false)}

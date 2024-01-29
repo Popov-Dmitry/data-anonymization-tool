@@ -40,7 +40,7 @@ const ValueReplacement = ({ column }: IValueReplacementData) => {
           label="Замена значения"
         />
         <Tooltip title="Одобрено Роскомнадзором">
-          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+          <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
         </Tooltip>
       </div>
       {selected && (

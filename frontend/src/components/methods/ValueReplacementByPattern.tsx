@@ -42,7 +42,7 @@ const ValueReplacementByPattern = ({ column }: IValueReplacementByPatternData) =
           label="Замена значения по паттерну"
         />
         <Tooltip title="Одобрено Роскомнадзором">
-          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+          <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
         </Tooltip>
       </div>
       {selected && (

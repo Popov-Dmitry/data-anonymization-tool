@@ -1,5 +1,5 @@
 import "./Methods.scss";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { bemElement } from "../../utils/bem-class-names";
 import {
   Accordion,
@@ -28,15 +28,12 @@ import Shuffle from "./Shuffle";
 import ApplyMethodsModal from "../modals/apply-methods-modal/ApplyMethodsModal";
 import RiskAssessmentMethod from "../risk-assessment-method/RiskAssessmentMethod";
 import Attribute from "../attribute/Attribute";
-import { useRiskAssessment } from "../../providers/risk-assessment-provider";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
+import { useAttributes } from "../../providers/attributes-provider";
+import DataType from "../data-type/DataType";
 
 const baseClassName = "methods";
 const bem = bemElement(baseClassName);
-
-interface IMethodsData {
-  columns: string[];
-}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -71,15 +68,11 @@ function a11yProps(index: number) {
   };
 }
 
-const Methods = ({ columns }: IMethodsData) => {
+const Methods = () => {
   const [showApplyMethodsModal, setShowApplyMethodsModal] = useState<boolean>(false);
   const [value, setValue] = React.useState(0);
-  const { initAttributesType } = useRiskAssessment();
   const { triggerDataCollecting } = useMethodsInputs();
-
-  useEffect(() => {
-    initAttributesType(columns);
-  }, [columns, initAttributesType]);
+  const { attributes } = useAttributes();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -92,31 +85,60 @@ const Methods = ({ columns }: IMethodsData) => {
 
   return (
     <div className={baseClassName}>
-      <div>
+      <div className={bem("container")}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs variant="fullWidth" value={value} onChange={handleChange}>
-            <Tab label="Обезличивание" {...a11yProps(0)} />
-            <Tab label="Оценка рисков" {...a11yProps(1)} />
+            <Tab label="Типы атрибутов" {...a11yProps(0)} />
+            <Tab label="Обезличивание" {...a11yProps(1)} />
+            <Tab label="Оценка рисков" {...a11yProps(2)} />
+            <Tab label="Оценка информационных потерь" {...a11yProps(3)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
+          <div>
+            <Typography variant="h5" className={`${baseClassName}-title`}>
+              Настройка типов атрибутов
+            </Typography>
+            <Accordion className="my-16px">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Тип атрибута</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={bem("list-content")}>
+                {attributes.map((column: string) => (
+                  <Attribute key={column} column={column} />
+                ))}
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="my-16px">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Тип данных атрибута</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={bem("list-content")}>
+                {attributes.map((column: string) => (
+                  <DataType key={column} column={column} />
+                ))}
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
           <Typography variant="h5" className={`${baseClassName}-title`}>
             Настройка методов обезличивания
           </Typography>
           <div className={bem("list")}>
-            <Typography variant="h6">Для групп столбцов</Typography>
+            <Typography variant="h6">Для групп атрибутов</Typography>
             <div>
-              <Shuffle columns={columns} />
-              <Identifier columns={columns} />
-              <MicroAggregation columns={columns} />
-              <MicroAggregationBySingleAxis columns={columns} />
+              <Shuffle />
+              <Identifier />
+              <MicroAggregation />
+              <MicroAggregationBySingleAxis />
             </div>
           </div>
           <div className={bem("list")}>
             <Typography variant="h6" className={bem("list-title")}>
-              Для каждого столбца
+              Для каждого атрибута
             </Typography>
-            {columns.map((column: string) => (
+            {attributes.map((column: string) => (
               <Accordion key={column}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>{column}</Typography>
@@ -136,33 +158,23 @@ const Methods = ({ columns }: IMethodsData) => {
             ))}
           </div>
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
+        <CustomTabPanel value={value} index={2}>
           <div>
             <Typography variant="h5" className={`${baseClassName}-title`}>
               Настройка методов оценки рисков
             </Typography>
-            <Accordion className="my-16px">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Тип признака</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={bem("list-content")}>
-                {columns.map((column: string) => (
-                  <Attribute key={column} column={column} />
-                ))}
-              </AccordionDetails>
-            </Accordion>
-            <RiskAssessmentMethod />
+            <RiskAssessmentMethod className="my-16px" />
           </div>
         </CustomTabPanel>
-        <div className={bem("button")}>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={onApply}
-          >
-            Запуск
-          </Button>
-        </div>
+      </div>
+      <div className={bem("button")}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onApply}
+        >
+          Запуск
+        </Button>
       </div>
       <ApplyMethodsModal
         show={showApplyMethodsModal}

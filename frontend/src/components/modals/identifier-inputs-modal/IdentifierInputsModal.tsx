@@ -6,6 +6,7 @@ import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/mate
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IIdentifier } from "../../methods/Identifier";
+import { useAttributes } from "../../../providers/attributes-provider";
 
 const baseClassName = "identifier-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -24,7 +25,6 @@ const style = {
 };
 
 interface IIdentifierInputsModal {
-  columns: string[]
   show: boolean;
   onHide: () => void;
   saveData: (data: IIdentifier[]) => void;
@@ -36,7 +36,8 @@ const defaultValue = {
   namesColumn: []
 };
 
-const IdentifierInputsModal = ({ columns, show, onHide, saveData, className = "" }: IIdentifierInputsModal) => {
+const IdentifierInputsModal = ({ show, onHide, saveData, className = "" }: IIdentifierInputsModal) => {
+  const { attributes } = useAttributes();
   const [data, setData] = useState<IIdentifier[]>([defaultValue]);
 
   const isFormValid = data.length > 0
@@ -78,8 +79,8 @@ const IdentifierInputsModal = ({ columns, show, onHide, saveData, className = ""
                 onChange={(event) => setData(data.map((v, i) => i === index ? { ...item, newNameTable: event.target.value } : v))}
               />
               <MultiSelect
-                options={columns.filter((column) => !data.some((value, i) => index !== i && value.namesColumn.some(((v) => v === column))))}
-                placeholder="Выберете столбцы"
+                options={attributes.filter((column) => !data.some((value, i) => index !== i && value.namesColumn.some(((v) => v === column))))}
+                placeholder="Выберете атрибуты"
                 fullWidth
                 value={item.namesColumn}
                 onChange={(value) => setData(data.map((v, i) => i === index ? { ...item, namesColumn: value } : v))}

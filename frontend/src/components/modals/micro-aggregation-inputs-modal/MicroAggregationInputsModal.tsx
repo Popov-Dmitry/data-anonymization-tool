@@ -6,6 +6,7 @@ import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/mate
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IMicroAggregation } from "../../methods/MicroAggregation";
+import { useAttributes } from "../../../providers/attributes-provider";
 
 const baseClassName = "micro-aggregation-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -24,14 +25,14 @@ const style = {
 };
 
 interface IMicroAggregationInputsModal {
-  columns: string[]
   show: boolean;
   onHide: () => void;
   saveData: (data: IMicroAggregation[]) => void;
   className?: string;
 }
 
-const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
+const MicroAggregationInputsModal = ({ show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
+  const { attributes } = useAttributes();
   const [kLevels, setKLevels] = useState<number[]>([1]);
   const [namesColumn, setNamesColumn] = useState<string[]>([]);
 
@@ -67,9 +68,9 @@ const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, classNam
         <Typography variant="h6">Микроагрегация</Typography>
         <div className={bem("content")}>
           <MultiSelect
-            options={columns}
+            options={attributes}
             value={namesColumn}
-            placeholder="Выберете столбцы"
+            placeholder="Выберете атрибуты"
             fullWidth
             onChange={(value) => setNamesColumn(value)}
           />
