@@ -34,11 +34,6 @@ const Identifier = () => {
             onChange={(event) => setSelected(event.target.checked)}
           />}
           label="Введение идентификаторов"
-          sx={{
-            "& .MuiFormControlLabel-label": {
-              width: "100px"
-            }
-          }}
         />
         <Tooltip title="Одобрено Роскомнадзором" className="self-start mt-4px">
           <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />

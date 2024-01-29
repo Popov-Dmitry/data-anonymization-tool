@@ -36,11 +36,6 @@ const MicroAggregationBySingleAxis = () => {
         />}
         label="Микроагрегация по одной оси"
         className="flex-2"
-        sx={{
-          "& .MuiFormControlLabel-label": {
-            width: "100px"
-          }
-        }}
       />
       {selected && (
         <Button

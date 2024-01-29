@@ -1,5 +1,5 @@
 import "./IdentifierInputsModal.scss";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { bemElement } from "../../../utils/bem-class-names";
 import { joinClassNames } from "../../../utils/join-class-names";
 import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
@@ -7,6 +7,7 @@ import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IIdentifier } from "../../methods/Identifier";
 import { useAttributes } from "../../../providers/attributes-provider";
+import { useAttributesTypes } from "../../../providers/attributes-types-provider";
 
 const baseClassName = "identifier-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -38,6 +39,10 @@ const defaultValue = {
 
 const IdentifierInputsModal = ({ show, onHide, saveData, className = "" }: IIdentifierInputsModal) => {
   const { attributes } = useAttributes();
+  const { attributesType } = useAttributesTypes();
+  const validAttributes = useMemo(() =>
+    attributes.filter((attribute) => attributesType.find((attributeType) => attributeType.name === attribute)?.type === "identifier"),
+    [attributes, attributesType]);
   const [data, setData] = useState<IIdentifier[]>([defaultValue]);
 
   const isFormValid = data.length > 0
@@ -69,22 +74,24 @@ const IdentifierInputsModal = ({ show, onHide, saveData, className = "" }: IIden
         <div className={bem("content")}>
           {data.map((item, index) => (
             <div key={index} className={bem("row")}>
-              <TextField
-                variant="standard"
-                label="Имя новой таблицы"
-                type="text"
-                sx={{width: 250}}
-                required
-                value={item.newNameTable}
-                onChange={(event) => setData(data.map((v, i) => i === index ? { ...item, newNameTable: event.target.value } : v))}
-              />
-              <MultiSelect
-                options={attributes.filter((column) => !data.some((value, i) => index !== i && value.namesColumn.some(((v) => v === column))))}
-                placeholder="Выберете атрибуты"
-                fullWidth
-                value={item.namesColumn}
-                onChange={(value) => setData(data.map((v, i) => i === index ? { ...item, namesColumn: value } : v))}
-              />
+              <div className={bem("column")}>
+                <TextField
+                  variant="standard"
+                  label="Название таблицы соответствий"
+                  type="text"
+                  fullWidth
+                  required
+                  value={item.newNameTable}
+                  onChange={(event) => setData(data.map((v, i) => i === index ? { ...item, newNameTable: event.target.value } : v))}
+                />
+                <MultiSelect
+                  options={validAttributes.filter((column) => !data.some((value, i) => index !== i && value.namesColumn.some(((v) => v === column))))}
+                  placeholder="Выберете атрибуты"
+                  fullWidth
+                  value={item.namesColumn}
+                  onChange={(value) => setData(data.map((v, i) => i === index ? { ...item, namesColumn: value } : v))}
+                />
+              </div>
               <IconButton
                 color="primary"
                 onClick={() => onDeleteClick(index)}

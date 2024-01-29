@@ -128,8 +128,8 @@ const Methods = () => {
           <div className={bem("list")}>
             <Typography variant="h6">Для групп атрибутов</Typography>
             <div>
-              <Shuffle />
               <Identifier />
+              <Shuffle />
               <MicroAggregation />
               <MicroAggregationBySingleAxis />
             </div>
