@@ -1,5 +1,5 @@
 import "./MicroAggregationInputsModal.scss";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { bemElement } from "../../../utils/bem-class-names";
 import { joinClassNames } from "../../../utils/join-class-names";
 import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
@@ -7,6 +7,7 @@ import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IMicroAggregation } from "../../methods/MicroAggregation";
 import { useAttributes } from "../../../providers/attributes-provider";
+import { useAttributesTypes } from "../../../providers/attributes-types-provider";
 
 const baseClassName = "micro-aggregation-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -33,6 +34,13 @@ interface IMicroAggregationInputsModal {
 
 const MicroAggregationInputsModal = ({ show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
   const { attributes } = useAttributes();
+  const { attributesDataType } = useAttributesTypes();
+  const validAttributes = useMemo(() =>
+      attributes.filter((attribute) => {
+        const type = attributesDataType.find((attributeType) => attributeType.name === attribute)?.dataType;
+        return type === "decimal" || type === "integer"
+      }),
+    [attributes, attributesDataType]);
   const [kLevels, setKLevels] = useState<number[]>([1]);
   const [namesColumn, setNamesColumn] = useState<string[]>([]);
 
@@ -68,7 +76,7 @@ const MicroAggregationInputsModal = ({ show, onHide, saveData, className = "" }:
         <Typography variant="h6">Микроагрегация</Typography>
         <div className={bem("content")}>
           <MultiSelect
-            options={attributes}
+            options={validAttributes}
             value={namesColumn}
             placeholder="Выберете атрибуты"
             fullWidth
@@ -79,7 +87,7 @@ const MicroAggregationInputsModal = ({ show, onHide, saveData, className = "" }:
               <div key={index} className={bem("row")}>
                 <TextField
                   variant="standard"
-                  label="k"
+                  label="Размер группы"
                   type="number"
                   required
                   fullWidth
