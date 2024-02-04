@@ -2,8 +2,10 @@ package ru.anontmization.dataanonymizationtool.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.anontmization.dataanonymizationtool.dto.DataPreparationDto;
 import ru.anontmization.dataanonymizationtool.dto.StatisticResponseDto;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
+import ru.anontmization.dataanonymizationtool.services.DataPreparationService;
 import ru.anontmization.dataanonymizationtool.services.DepersonalizationService;
 import ru.anontmization.dataanonymizationtool.services.StatisticService;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class DepersonalizationController {
 
     private final DepersonalizationService service;
+    private final DataPreparationService dataPreparationService;
     private final StatisticService statisticService;
     private final ControllerDataBaseService controllerService;
 
@@ -26,6 +29,11 @@ public class DepersonalizationController {
     @PostMapping("/config")
     public void setConfig(@RequestBody String request) {
         service.setConfig(request);
+    }
+
+    @PostMapping("/config/preparation")
+    public void setConfigPreparation(@RequestBody List<DataPreparationDto> request) {
+        dataPreparationService.setConfig(request);
     }
 
     @GetMapping("/start")

@@ -38,6 +38,7 @@ public class DepersonalizationService {
 
     private final ControllerDataBaseService controllerDB;
     private final StatisticService statisticService;
+    private final DataPreparationService dataPreparationService;
 
     private List<MaskItem> methods = new ArrayList<>();
 
@@ -79,10 +80,17 @@ public class DepersonalizationService {
 
             if(methodName.equals("Decomposition")){
                 JSONObject params = method.getJSONObject("params");
+                JSONArray columnsJSON  = params.getJSONArray("nameColumns");
+                String[] columns = new String[columnsJSON.length()];
+
+                for (int j = 0; j < columns.length; j++) {
+                    columns[j] = columnsJSON.getString(j);
+                }
+
                 methods.add(
                         new Decomposition(
                                 params.getString("nameTable"),
-                                params.getString("nameColumn"),
+                                columns,
                                 params.getString("nameNewTable"),
                                 new ControllerDB(
                                         params.getString("url"),
@@ -143,6 +151,14 @@ public class DepersonalizationService {
 
     private String masking() {
         status = Status.IN_PROGRESS;
+
+        try {
+            dataPreparationService.start();
+        } catch (Exception e) {
+            controllerDB.disconnect();
+            throw new RuntimeException(e);
+        }
+
         long start = System.currentTimeMillis();
 
         controllerDB.connect();
