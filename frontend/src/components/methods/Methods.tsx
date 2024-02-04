@@ -132,6 +132,7 @@ const Methods = () => {
             <div>
               <Identifier />
               <Shuffle />
+              <Decomposition />
               <MicroAggregation />
               <MicroAggregationBySingleAxis />
             </div>
@@ -146,7 +147,6 @@ const Methods = () => {
                   <Typography>{column}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={bem("list-content")}>
-                  <Decomposition column={column} />
                   <ValueReplacement column={column} />
                   <ValueReplacementByPattern column={column} />
                   <ValueReplacementFromFile column={column} />

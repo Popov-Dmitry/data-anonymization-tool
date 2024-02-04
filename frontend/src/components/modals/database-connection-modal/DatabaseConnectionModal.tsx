@@ -12,6 +12,8 @@ import { bemElement } from "../../../utils/bem-class-names";
 import { useFormik } from "formik";
 import { joinClassNames } from "../../../utils/join-class-names";
 import { DatabaseConnectionData } from "../../../providers/database-connection-provider";
+import MultiSelect from "../../multi-select/MultiSelect";
+import { useAttributes } from "../../../providers/attributes-provider";
 
 const baseClassName = "database-connection-modal";
 const bem = bemElement(baseClassName);
@@ -35,7 +37,7 @@ interface IDatabaseConnectionModalData {
   title?: string;
   value: DatabaseConnectionData;
   onApply?: (value: DatabaseConnectionData, nameNewTable?: string) => void;
-  withTable?: boolean;
+  asDecomposition?: boolean;
   className?: string;
 }
 
@@ -45,7 +47,7 @@ const DatabaseConnectionModal = ({
   title = "Подключение к базе данных",
   value,
   onApply,
-  withTable,
+  asDecomposition,
   className = ""
 }: IDatabaseConnectionModalData) => {
   const databaseForm = useFormik({
@@ -62,6 +64,8 @@ const DatabaseConnectionModal = ({
     }
   });
   const [nameNewTable, setNameNewTable] = useState<string>("");
+  const [nameColumns, setNameColumns] = useState<string[]>([]);
+  const { attributes } = useAttributes();
 
   const isFormEmpty =
     databaseForm.values.database.length === 0 ||
@@ -70,7 +74,8 @@ const DatabaseConnectionModal = ({
     databaseForm.values.username.length === 0 ||
     databaseForm.values.password.length === 0 ||
     databaseForm.values.databaseName.length === 0 ||
-    (withTable && nameNewTable.length === 0);
+    (asDecomposition && nameNewTable.length === 0) ||
+    (asDecomposition && nameColumns.length === 0);
 
   return (
     <Modal
@@ -133,15 +138,24 @@ const DatabaseConnectionModal = ({
             value={databaseForm.values.databaseName}
             onChange={databaseForm.handleChange}
           />
-          {withTable && (
-            <TextField
-              variant="standard"
-              label="Имя новой таблицы"
-              type="text"
-              fullWidth
-              value={nameNewTable}
-              onChange={(event) => setNameNewTable(event.target.value)}
-            />
+          {asDecomposition && (
+            <>
+              <TextField
+                variant="standard"
+                label="Имя новой таблицы"
+                type="text"
+                fullWidth
+                value={nameNewTable}
+                onChange={(event) => setNameNewTable(event.target.value)}
+              />
+              <MultiSelect
+                options={attributes.filter((column) => !nameColumns.some((value, i) => value === column))}
+                placeholder="Выберете атрибуты"
+                fullWidth
+                value={nameColumns}
+                onChange={(value) => setNameColumns(value)}
+              />
+            </>
           )}
         </div>
         <div className={bem("buttons")}>

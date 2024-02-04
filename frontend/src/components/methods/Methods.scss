@@ -14,7 +14,7 @@
   }
 
   &__container {
-    @apply min-h-100%;
+    @apply min-h-[calc(100%_-_56px)];
   }
 
   &-title {
