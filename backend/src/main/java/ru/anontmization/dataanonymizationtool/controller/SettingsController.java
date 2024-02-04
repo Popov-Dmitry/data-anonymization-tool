@@ -8,6 +8,7 @@ import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService
 @RestController
 @RequestMapping("/api/v1/settings")
 @RequiredArgsConstructor
+@CrossOrigin
 public class SettingsController {
 
     private final ControllerDataBaseService controllerService;

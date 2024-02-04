@@ -110,10 +110,13 @@ public class StatisticService {
                     .MSE(null)
                     .MD(null);
         }
-        result = responseDto
-                .Shannon(BigDecimal.valueOf(Shannon/statisticMask.size()))
-                .risk(riskResult)
-                .build();
+        if (Shannon != 0) {
+            result = responseDto
+                    .Shannon(BigDecimal.valueOf(Shannon/statisticMask.size()))
+                    .risk(riskResult)
+                    .build();
+        }
+
 
         return result;
     }

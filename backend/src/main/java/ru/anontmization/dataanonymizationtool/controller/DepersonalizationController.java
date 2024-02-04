@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/mask")
 @RequiredArgsConstructor
+@CrossOrigin
 public class DepersonalizationController {
 
     private final DepersonalizationService service;

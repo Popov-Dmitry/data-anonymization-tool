@@ -1,10 +1,7 @@
 package ru.anontmization.dataanonymizationtool.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.anontmization.dataanonymizationtool.services.ControllerDataBaseService;
 
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/tables")
 @RequiredArgsConstructor
+@CrossOrigin
 public class DataBaseController {
     private final ControllerDataBaseService controllerService;
 
