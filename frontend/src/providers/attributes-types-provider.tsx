@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAttributes } from "./attributes-provider";
 
 export type TAttributeType = "identifier" | "quasi-identifier" | "sensitive" | "insensitive";
@@ -32,12 +32,13 @@ const AttributesTypesStateContext = React.createContext<
 export function AttributesTypesProvider(props: Props) {
   const { children } = props;
   const { attributes } = useAttributes();
-  const [attributesType, setAttributesType] = useState<IAttributeType[]>(
-    attributes.map((attribute: string) => ({ name: attribute, type: "identifier" }))
-  );
-  const [attributesDataType, setAttributesDataType] = useState<IAttributeDataType[]>(
-    attributes.map((attribute: string) => ({ name: attribute, dataType: "string" }))
-  );
+  const [attributesType, setAttributesType] = useState<IAttributeType[]>([]);
+  const [attributesDataType, setAttributesDataType] = useState<IAttributeDataType[]>([]);
+
+  useEffect(() => {
+    setAttributesType(attributes.map((attribute: string) => ({ name: attribute, type: "identifier" })));
+    setAttributesDataType(attributes.map((attribute: string) => ({ name: attribute, dataType: "string" })));
+  }, [attributes]);
 
   const changeAttributeType = useCallback((value: IAttributeType) => {
     setAttributesType((prevState: IAttributeType[]) => prevState.map((attribute: IAttributeType) =>

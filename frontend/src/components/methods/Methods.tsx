@@ -31,6 +31,7 @@ import Attribute from "../attribute/Attribute";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 import { useAttributes } from "../../providers/attributes-provider";
 import DataType from "../data-type/DataType";
+import { useAttributesTypes } from "../../providers/attributes-types-provider";
 
 const baseClassName = "methods";
 const bem = bemElement(baseClassName);
@@ -73,6 +74,7 @@ const Methods = () => {
   const [value, setValue] = React.useState(0);
   const { triggerDataCollecting } = useMethodsInputs();
   const { attributes } = useAttributes();
+  const { attributesType } = useAttributesTypes();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -130,6 +132,7 @@ const Methods = () => {
             <div>
               <Identifier />
               <Shuffle />
+              <Decomposition />
               <MicroAggregation />
               <MicroAggregationBySingleAxis />
             </div>
@@ -144,12 +147,15 @@ const Methods = () => {
                   <Typography>{column}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={bem("list-content")}>
-                  <Decomposition column={column} />
                   <ValueReplacement column={column} />
                   <ValueReplacementByPattern column={column} />
                   <ValueReplacementFromFile column={column} />
-                  <GeneralizationString column={column} />
-                  <GeneralizationValue column={column} />
+                  {attributesType.find((attribute) => attribute.name === column)?.type === "quasi-identifier" && (
+                    <>
+                      <GeneralizationString column={column} />
+                      <GeneralizationValue column={column} />
+                    </>
+                  )}
                   <DateAging column={column} />
                   <Round column={column} />
                   <ValueVariance column={column} />

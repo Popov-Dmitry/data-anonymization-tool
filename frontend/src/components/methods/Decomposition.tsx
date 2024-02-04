@@ -9,11 +9,7 @@ import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IDecompositionData {
-  column: string;
-}
-
-const Decomposition = ({ column }: IDecompositionData) => {
+const Decomposition = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
   const {
@@ -40,7 +36,7 @@ const Decomposition = ({ column }: IDecompositionData) => {
       addData([{
         method: "Decomposition",
         params: {
-          nameColumn: column,
+          // nameColumn: column,
           nameNewTable,
           url: `jdbc:${data.database}://${data.server}:${data.port}/`,
           nameDB: data.databaseName,
@@ -49,7 +45,7 @@ const Decomposition = ({ column }: IDecompositionData) => {
         }
       }]);
     }
-  }, [addData, column, data.database, data.databaseName, data.password, data.port, data.server, data.username, isTriggered, nameNewTable, selected]);
+  }, [addData, data.database, data.databaseName, data.password, data.port, data.server, data.username, isTriggered, nameNewTable, selected]);
 
   const onApply = (values: DatabaseConnectionData, nameNewTable?: string) => {
     setData(values);
@@ -85,7 +81,7 @@ const Decomposition = ({ column }: IDecompositionData) => {
       <DatabaseConnectionModal
         title="Декомпозиция"
         value={data}
-        withTable
+        asDecomposition
         onApply={onApply}
         show={showInputsModal}
         onHide={() => setShowInputsModal(false)}
