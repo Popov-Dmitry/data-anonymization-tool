@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 import { bemElement } from "../../utils/bem-class-names";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
@@ -38,9 +39,16 @@ const ValueReplacementFromFile = ({ column }: IValueReplacementFromFileData) => 
           />}
           label="Замена значения из файла"
         />
-        <Tooltip title="Одобрено Роскомнадзором">
-          <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
-        </Tooltip>
+        <div className={bem("row")}>
+          <Tooltip title="Одобрено Роскомнадзором">
+            <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
+          </Tooltip>
+          {selected && (
+            <Tooltip title="Из файла берется случайная строка и подставляется вместо значения в таблице">
+              <HelpOutlineIcon className={bem("help-icon")} />
+            </Tooltip>
+          )}
+        </div>
       </div>
       {selected && (
         <TextField

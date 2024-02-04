@@ -16,10 +16,10 @@ const menu = [
     title: "Таблицы",
     route: "/tables"
   },
-  {
-    title: "Справка",
-    route: "/help"
-  }
+  // {
+  //   title: "Справка",
+  //   route: "/help"
+  // }
 ];
 
 export default function MenuAppBar() {

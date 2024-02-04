@@ -52,6 +52,10 @@
     @apply flex items-center;
   }
 
+  &__help-icon {
+    @apply w-18px h-18px #{!important};
+  }
+
   &__full-width {
     @apply w-100%;
   }
