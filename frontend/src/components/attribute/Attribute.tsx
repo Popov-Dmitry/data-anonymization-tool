@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
-import { TAttributeType, useRiskAssessment } from "../../providers/risk-assessment-provider";
+import { TAttributeType, useAttributesTypes } from "../../providers/attributes-types-provider";
 
 interface IAttributeData {
   column: string;
 }
 
 const Attribute = ({ column }: IAttributeData) => {
-  const { changeAttributeType, attributesType } = useRiskAssessment();
+  const { changeAttributeType, attributesType } = useAttributesTypes();
   const [value, setValue] = React.useState<TAttributeType>("identifier");
 
   useEffect(() => {
@@ -31,6 +31,7 @@ const Attribute = ({ column }: IAttributeData) => {
         <FormControlLabel value="identifier" control={<Radio />} label="Прямой идентификатор" />
         <FormControlLabel value="quasi-identifier" control={<Radio />} label="Квазиидентификатор" />
         <FormControlLabel value="sensitive" control={<Radio />} label="Чувствительный признак" />
+        <FormControlLabel value="insensitive" control={<Radio />} label="Нечувствительный признак" />
       </RadioGroup>
     </FormControl>
   );

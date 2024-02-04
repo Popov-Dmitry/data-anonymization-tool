@@ -8,16 +8,12 @@ import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IIdentifierData {
-  columns: string[];
-}
-
 export interface IIdentifier {
   namesColumn: string[];
   newNameTable: string;
 }
 
-const Identifier = ({ columns }: IIdentifierData) => {
+const Identifier = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
   const [data, setData] = useState<IIdentifier[]>([]);
@@ -38,14 +34,9 @@ const Identifier = ({ columns }: IIdentifierData) => {
             onChange={(event) => setSelected(event.target.checked)}
           />}
           label="Введение идентификаторов"
-          sx={{
-            "& .MuiFormControlLabel-label": {
-              width: "100px"
-            }
-          }}
         />
         <Tooltip title="Одобрено Роскомнадзором" className="self-start mt-4px">
-          <img src={require('../../assets/RKN.png')} height={14} width={14} />
+          <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
         </Tooltip>
       </div>
       {selected && (
@@ -60,7 +51,6 @@ const Identifier = ({ columns }: IIdentifierData) => {
       )}
       <IdentifierInputsModal
         saveData={setData}
-        columns={columns}
         show={showInputsModal}
         onHide={() => setShowInputsModal(false)}
       />

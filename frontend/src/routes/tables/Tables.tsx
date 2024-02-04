@@ -46,7 +46,7 @@ const Tables = () => {
         </Typography>
         <List>
           {tables.map((table: string) => (
-            <ListItem>
+            <ListItem key={table}>
               <ListItemButton onClick={() => navigate(`/tables/${table}`)}>
                 <Typography>{table}</Typography>
               </ListItemButton>

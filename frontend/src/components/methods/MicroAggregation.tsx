@@ -8,19 +8,15 @@ import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IMicroAggregationData {
-  columns: string[];
-}
-
 export interface IMicroAggregation {
   namesColumn: string[];
   k: number;
 }
 
-const MicroAggregation = ({ columns }: IMicroAggregationData) => {
+const MicroAggregation = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
-  const [data, setData] = useState<IMicroAggregation[][]>([]);
+  const [data, setData] = useState<IMicroAggregation[]>([]);
   const { addData, isTriggered } = useMethodsInputs();
 
   useEffect(() => {
@@ -50,7 +46,6 @@ const MicroAggregation = ({ columns }: IMicroAggregationData) => {
         </Button>
       )}
       <MicroAggregationInputsModal
-        columns={columns}
         saveData={setData}
         show={showInputsModal}
         onHide={() => setShowInputsModal(false)}

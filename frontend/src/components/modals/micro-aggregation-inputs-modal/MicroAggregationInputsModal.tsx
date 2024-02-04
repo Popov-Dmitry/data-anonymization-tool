@@ -1,11 +1,13 @@
 import "./MicroAggregationInputsModal.scss";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { bemElement } from "../../../utils/bem-class-names";
 import { joinClassNames } from "../../../utils/join-class-names";
 import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IMicroAggregation } from "../../methods/MicroAggregation";
+import { useAttributes } from "../../../providers/attributes-provider";
+import { useAttributesTypes } from "../../../providers/attributes-types-provider";
 
 const baseClassName = "micro-aggregation-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -24,41 +26,42 @@ const style = {
 };
 
 interface IMicroAggregationInputsModal {
-  columns: string[]
   show: boolean;
   onHide: () => void;
-  saveData: (data: IMicroAggregation[][]) => void;
+  saveData: (data: IMicroAggregation[]) => void;
   className?: string;
 }
 
-const defaultSettings: IMicroAggregation = {
-  k: 1,
-  namesColumn: []
-};
-
-const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
-  const [data, setData] = useState<IMicroAggregation[][]>([[defaultSettings]]);
+const MicroAggregationInputsModal = ({ show, onHide, saveData, className = "" }: IMicroAggregationInputsModal) => {
+  const { attributes } = useAttributes();
+  const { attributesDataType } = useAttributesTypes();
+  const validAttributes = useMemo(() =>
+      attributes.filter((attribute) => {
+        const type = attributesDataType.find((attributeType) => attributeType.name === attribute)?.dataType;
+        return type === "decimal" || type === "integer"
+      }),
+    [attributes, attributesDataType]);
+  const [kLevels, setKLevels] = useState<number[]>([1]);
+  const [namesColumn, setNamesColumn] = useState<string[]>([]);
 
   const onAddRowClick = () => {
-    setData(data.map((value: IMicroAggregation[], index: number) =>
-        (index === data.length - 1 ? [...value, defaultSettings] : value)
-    ));
-  };
-
-  const onAddLevelClick = () => {
-    setData([...data, [defaultSettings]]);
+    setKLevels((prevState) => [...prevState, prevState[prevState.length - 1] + 1])
   };
 
   const onDeleteClick = (index: number) => {
-    setData(data.filter((_, i) => i !== index));
+    setKLevels(kLevels.filter((_, i) => i !== index));
   };
 
-  const isFormValid = data.length > 0
-      && data.filter((item) => item.filter(item => item.k > 0 && item.namesColumn.length > 0)).length === data.length;
+  const isFormValid = kLevels.length > 0
+      && kLevels.filter(item => item > 0).length === kLevels.length
+      && namesColumn.length > 0;
 
   const _onHide = () => {
     if (isFormValid) {
-      saveData(data);
+      saveData(kLevels.map((k) => ({
+        k,
+        namesColumn
+      })));
     }
     onHide();
   };
@@ -72,45 +75,36 @@ const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, classNam
       <Box sx={style}>
         <Typography variant="h6">Микроагрегация</Typography>
         <div className={bem("content")}>
-          {data.map((level: IMicroAggregation[], levelIndex: number) => (
-              <div key={levelIndex}>
-                <div className={bem("level")}>
-                  {level.map((item: IMicroAggregation, index: number) => (
-                      <div key={index} className={bem("row")}>
-                        <TextField
-                            variant="standard"
-                            label="k"
-                            type="number"
-                            required
-                            value={item.k}
-                            onChange={(event) => {
-                              setData(data.map((l, i) =>
-                                  (i === levelIndex ? l.map((v, i) => (i === index ? { ...v, k: parseInt(event.target.value) } : v)) : l)));
-                            }}
-                            sx={{width: 50}}
-                        />
-                        <MultiSelect
-                            options={columns}
-                            value={item.namesColumn}
-                            placeholder="Выберете столбцы"
-                            fullWidth
-                            onChange={(value) => {
-                              setData(data.map((l, i) =>
-                                  (i === levelIndex ? l.map((v, i) => (i === index ? { ...v, namesColumn: value } : v)) : l)));
-                            }}
-                        />
-                        <IconButton
-                            color="primary"
-                            onClick={() => onDeleteClick(index)}
-                        >
-                          <DeleteIcon color="action" />
-                        </IconButton>
-                      </div>
-                  ))}
-                </div>
-                <hr />
+          <MultiSelect
+            options={validAttributes}
+            value={namesColumn}
+            placeholder="Выберете атрибуты"
+            fullWidth
+            onChange={(value) => setNamesColumn(value)}
+          />
+          <div className={bem("level")}>
+            {kLevels.map((item: number, index: number) => (
+              <div key={index} className={bem("row")}>
+                <TextField
+                  variant="standard"
+                  label="Размер группы"
+                  type="number"
+                  required
+                  fullWidth
+                  value={item}
+                  onChange={(event) => {
+                    setKLevels(kLevels.map((v, i) => (i === index ? parseInt(event.target.value) : v)));
+                  }}
+                />
+                <IconButton
+                  color="primary"
+                  onClick={() => onDeleteClick(index)}
+                >
+                  <DeleteIcon color="action" />
+                </IconButton>
               </div>
-          ))}
+            ))}
+          </div>
         </div>
         <div className={bem("buttons")}>
           <div className={bem("buttons-left")}>
@@ -119,14 +113,7 @@ const MicroAggregationInputsModal = ({ columns, show, onHide, saveData, classNam
                 className="flex-1"
                 onClick={onAddRowClick}
             >
-              Добавить строку
-            </Button>
-            <Button
-                variant="outlined"
-                className="flex-1"
-                onClick={onAddLevelClick}
-            >
-              Новый уровень
+              Добавить уровень
             </Button>
           </div>
 

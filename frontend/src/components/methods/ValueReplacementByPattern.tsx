@@ -4,6 +4,7 @@ import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { bemElement } from "../../utils/bem-class-names";
 import { useMethodsInputs } from "../../providers/methods-inputs-provider";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
@@ -41,9 +42,16 @@ const ValueReplacementByPattern = ({ column }: IValueReplacementByPatternData) =
           />}
           label="Замена значения по паттерну"
         />
-        <Tooltip title="Одобрено Роскомнадзором">
-          <img src={require('../../assets/RKN.png')} height={14} width={14} />
-        </Tooltip>
+        <div className={bem("row")}>
+          <Tooltip title="Одобрено Роскомнадзором">
+            <img src={require("../../assets/RKN.png")} alt="Одобрено Роскомнадзором" height={14} width={14} />
+          </Tooltip>
+          {selected && (
+            <Tooltip title="Справку о том, как составляется паттерн можно найти здесь: https://javarush.com/groups/posts/regulyarnye-vyrazheniya-v-java">
+              <HelpOutlineIcon className={bem("help-icon")} />
+            </Tooltip>
+          )}
+        </div>
       </div>
       {selected && (
         <div className={bem("row")}>

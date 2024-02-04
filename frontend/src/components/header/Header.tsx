@@ -16,10 +16,10 @@ const menu = [
     title: "Таблицы",
     route: "/tables"
   },
-  {
-    title: "Справка",
-    route: "/help"
-  }
+  // {
+  //   title: "Справка",
+  //   route: "/help"
+  // }
 ];
 
 export default function MenuAppBar() {
@@ -60,7 +60,7 @@ export default function MenuAppBar() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, position: "sticky", top: 0, zIndex: 1000 }}>
         <AppBar position="static">
           <Toolbar>
             <AdminPanelSettingsIcon sx={{ mr: 1 }} />

@@ -1,16 +1,20 @@
 .methods {
-  @apply min-w-400px max-w-400px;
+  @apply min-w-600px max-w-700px;
   @apply rounded-16px shadow-evaluation-2;
   @apply bg-surface+3;
   @apply px-16px py-12px mb-8px;
   @apply h-[calc(100vh_-_120px)];
   @apply overflow-y-scroll;
-  @apply relative;
+  @apply sticky top-80px;
   -ms-overflow-style: none;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  &__container {
+    @apply min-h-100%;
   }
 
   &-title {
@@ -46,6 +50,10 @@
 
   &__approved {
     @apply flex items-center;
+  }
+
+  &__help-icon {
+    @apply w-18px h-18px #{!important};
   }
 
   &__full-width {

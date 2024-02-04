@@ -5,6 +5,7 @@ import { joinClassNames } from "../../../utils/join-class-names";
 import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
 import MultiSelect from "../../multi-select/MultiSelect";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAttributes } from "../../../providers/attributes-provider";
 
 const baseClassName = "shuffle-inputs-modal";
 const bem = bemElement(baseClassName);
@@ -23,15 +24,15 @@ const style = {
 };
 
 interface IShuffleInputsModal {
-  columns: string[]
   show: boolean;
   onHide: () => void;
   saveData: (data: string[][]) => void;
   className?: string;
 }
 
-const ShuffleInputsModal = ({ columns, show, onHide, saveData, className = "" }: IShuffleInputsModal) => {
+const ShuffleInputsModal = ({ show, onHide, saveData, className = "" }: IShuffleInputsModal) => {
   const [data, setData] = useState<string[][]>([[]]);
+  const { attributes } = useAttributes();
 
   const isFormValid = data.length > 0
     && data.filter((item) => item.length > 0).length === data.length;
@@ -63,8 +64,8 @@ const ShuffleInputsModal = ({ columns, show, onHide, saveData, className = "" }:
           {data.map((item, index) => (
             <div key={index} className={bem("row")}>
               <MultiSelect
-                options={columns}
-                placeholder="Выберете столбцы"
+                options={attributes}
+                placeholder="Выберете атрибуты"
                 fullWidth
                 value={item}
                 onChange={(value) => setData(data.map((v, i) => i === index ? value : v))}

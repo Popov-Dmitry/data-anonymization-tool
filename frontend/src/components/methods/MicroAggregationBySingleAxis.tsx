@@ -9,20 +9,16 @@ import { useMethodsInputs } from "../../providers/methods-inputs-provider";
 const baseClassName = "method";
 const bem = bemElement(baseClassName);
 
-interface IMicroAggregationData {
-  columns: string[];
-}
-
 export interface IMicroAggregationBySingleAxis {
   k: number;
   axisColumn: string;
   namesColumn: string[];
 }
 
-const MicroAggregationBySingleAxis = ({ columns }: IMicroAggregationData) => {
+const MicroAggregationBySingleAxis = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [showInputsModal, setShowInputsModal] = useState<boolean>(false);
-  const [data, setData] = useState<IMicroAggregationBySingleAxis[][]>([[]]);
+  const [data, setData] = useState<IMicroAggregationBySingleAxis[]>([]);
   const { addData, isTriggered } = useMethodsInputs();
 
   useEffect(() => {
@@ -40,11 +36,6 @@ const MicroAggregationBySingleAxis = ({ columns }: IMicroAggregationData) => {
         />}
         label="Микроагрегация по одной оси"
         className="flex-2"
-        sx={{
-          "& .MuiFormControlLabel-label": {
-            width: "100px"
-          }
-        }}
       />
       {selected && (
         <Button
@@ -57,7 +48,6 @@ const MicroAggregationBySingleAxis = ({ columns }: IMicroAggregationData) => {
         </Button>
       )}
       <MicroAggregationBySingleAxisInputsModal
-        columns={columns}
         saveData={setData}
         show={showInputsModal}
         onHide={() => setShowInputsModal(false)}

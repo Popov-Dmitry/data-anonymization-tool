@@ -1,11 +1,16 @@
 .identifier-inputs-modal {
   &__content {
     @apply my-16px;
-    @apply flex flex-col gap-8px;
+    @apply flex flex-col gap-16px;
   }
 
   &__row {
     @apply flex items-center gap-8px;
+  }
+
+  &__column {
+    @apply flex flex-col gap-12px;
+    @apply w-100%;
   }
 
   &__buttons {
