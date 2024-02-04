@@ -35,7 +35,7 @@ const Identifier = () => {
           />}
           label="Введение идентификаторов"
         />
-        <Tooltip title="Одобрено Роскомнадзором" className="self-start mt-4px">
+        <Tooltip title="Одобрено Роскомнадзором">
           <img src={require('../../assets/RKN.png')} alt="Одобрено Роскомнадзором" height={14} width={14} />
         </Tooltip>
       </div>
