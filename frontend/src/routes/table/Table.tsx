@@ -1,5 +1,5 @@
 import "./Table.scss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useDatabaseConnection } from "../../providers/database-connection-provider";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,18 +21,20 @@ const Table = () => {
   const { setNameTable } = useMethodsInputs();
   const { setAttributes } = useAttributes();
   const { api } = useAxios();
-  const [columns, setColumns] = useState<GridColDef[]>();
-  const [rows, setRows] = useState<any>();
+  const [columns, setColumns] = useState<GridColDef[]>([]);
+  const [rows, setRows] = useState<any>([]);
+  const dataGridRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (name) {
       setNameTable(name);
       (async () => {
         try {
           const { data } =  await api.get(`/tables/${name}`);
-          if (data.length > 0) {
+          if (data.length > 0 && dataGridRef.current) {
             setRows(data);
-            setColumns(Object.keys(data[0]).map((key) => ({ field: key })));
+            const columnWidth = dataGridRef.current?.clientWidth / Object.keys(data[0]).length;
+            setColumns(Object.keys(data[0]).map((key) => ({ field: key, width: columnWidth })));
             setAttributes(Object.keys(data[0]));
           }
         } catch (e: any) {
@@ -40,7 +42,7 @@ const Table = () => {
         }
       })();
     }
-  }, [api, name, setNameTable]);
+  }, [api, name, setAttributes, setNameTable]);
 
   useEffect(() => {
     document.getElementsByTagName("main")[0].classList.remove("max-w-1200px");
@@ -56,10 +58,6 @@ const Table = () => {
     }
   }, [isConnected, navigate]);
 
-  if (!rows || !columns) {
-    return null;
-  }
-
   return (
     <>
       <Helmet>
@@ -69,6 +67,7 @@ const Table = () => {
       <div className={baseClassName}>
         <div className={bem("data")}>
           <DataGrid
+            ref={dataGridRef}
             rows={rows}
             columns={columns}
             editMode="row"

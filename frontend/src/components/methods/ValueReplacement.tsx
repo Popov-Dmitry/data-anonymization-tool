@@ -31,7 +31,7 @@ const ValueReplacement = ({ column }: IValueReplacementData) => {
 
   return (
     <div className={joinClassNames(baseClassName, bem("row"))}>
-      <div className={joinClassNames(bem("approved"), "flex-shrink-0")}>
+      <div className={joinClassNames(bem("approved"), "flex-shrink-0 flex-2")}>
         <FormControlLabel
           control={<Switch
             checked={selected}
@@ -45,6 +45,7 @@ const ValueReplacement = ({ column }: IValueReplacementData) => {
       </div>
       {selected && (
         <TextField
+          className="flex-1"
           variant="standard"
           label="Новое значение"
           type="text"
