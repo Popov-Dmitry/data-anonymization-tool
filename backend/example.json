@@ -47,7 +47,7 @@
     "method" : "Decomposition",
     "params" : {
       "nameTable" : "periods_infection",
-      "nameColumn" : "name_city",
+      "nameColumn" : ["name_city"],
       "nameNewTable" : "periods_infection_city",
       "url" : "jdbc:postgresql://localhost:5432/",
       "nameDB" : "test",
