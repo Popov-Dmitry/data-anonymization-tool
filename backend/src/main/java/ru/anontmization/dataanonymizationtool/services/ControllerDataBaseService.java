@@ -114,11 +114,12 @@ public class ControllerDataBaseService {
         return columns;
     }
 
-    public String getTable(String name) {
+    public String getTable(String name, int page) {
         connect();
         JSONArray result = new JSONArray();
+        page *= 100;
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + name + ";");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+name+" offset "+page+" limit 100;");
             ResultSetMetaData md = resultSet.getMetaData();
             int numCols = md.getColumnCount();
             List<String> colNames = IntStream.range(0, numCols)

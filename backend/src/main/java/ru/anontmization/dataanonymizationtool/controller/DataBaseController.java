@@ -23,8 +23,8 @@ public class DataBaseController {
         return controllerService.getColumnNames(name);
     }
 
-    @GetMapping("/{name}")
-    public String getTable(@PathVariable String name){
-        return controllerService.getTable(name);
+    @GetMapping("/{name}/{page}")
+    public String getTable(@PathVariable String name, @PathVariable int page){
+        return controllerService.getTable(name, page);
     }
 }
