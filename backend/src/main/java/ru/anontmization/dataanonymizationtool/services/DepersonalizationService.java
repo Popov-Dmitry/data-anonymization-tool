@@ -72,8 +72,8 @@ public class DepersonalizationService {
 
         statisticService.setStatistic();
 
-        setRisk(methodsJSON.getJSONObject(0));
-        for (int i = 1; i < methodsJSON.length(); i++) {
+        int start = setRisk(methodsJSON.getJSONObject(0));
+        for (int i = start; i < methodsJSON.length(); i++) {
 
             JSONObject method = methodsJSON.getJSONObject(i);
             String methodName = method.getString("method");
@@ -188,37 +188,42 @@ public class DepersonalizationService {
                 "\"timeStart\" : \"" +timeStart + "\"}";
     }
 
-    private void setRisk(JSONObject riskJSON){
-        RiskDto risk = new RiskDto();
-
+    private int setRisk(JSONObject riskJSON){
         try {
-            controllerDB.setSensitive(getAttributeRisk(riskJSON.getJSONArray("sensitive")));
-        } catch (Exception e){
-            controllerDB.setSensitive(List.of());
+            RiskDto risk = new RiskDto();
+
+            try {
+                controllerDB.setSensitive(getAttributeRisk(riskJSON.getJSONArray("sensitive")));
+            } catch (Exception e){
+                controllerDB.setSensitive(List.of());
+            }
+            try {
+                controllerDB.setIdentifier(getAttributeRisk(riskJSON.getJSONArray("identifier")));
+            } catch (Exception e){
+                controllerDB.setIdentifier(List.of());
+            }
+            try {
+                controllerDB.setQuasiIdentifier(getAttributeRisk(riskJSON.getJSONArray("quasiIdentifier")));
+            } catch (Exception e){
+                controllerDB.setQuasiIdentifier(List.of());
+            }
+
+            risk.setName(riskJSON.getString("methodRisk"));
+            double proportion = 0;
+            try {
+                proportion = riskJSON.getDouble("proportion");
+            }catch (JSONException ignored){}
+            try {
+                proportion = riskJSON.getDouble("threshold");
+            }catch (JSONException ignored){}
+
+            risk.setProportion(proportion);
+
+            statisticService.setRiskMethod(risk);
+        } catch (Exception e) {
+            return 0;
         }
-        try {
-            controllerDB.setIdentifier(getAttributeRisk(riskJSON.getJSONArray("identifier")));
-        } catch (Exception e){
-            controllerDB.setIdentifier(List.of());
-        }
-        try {
-            controllerDB.setQuasiIdentifier(getAttributeRisk(riskJSON.getJSONArray("quasiIdentifier")));
-        } catch (Exception e){
-            controllerDB.setQuasiIdentifier(List.of());
-        }
-
-        risk.setName(riskJSON.getString("methodRisk"));
-        double proportion = 0;
-        try {
-            proportion = riskJSON.getDouble("proportion");
-        }catch (JSONException ignored){}
-        try {
-            proportion = riskJSON.getDouble("threshold");
-        }catch (JSONException ignored){}
-
-        risk.setProportion(proportion);
-
-        statisticService.setRiskMethod(risk);
+        return 1;
     }
 
     private List<AttributeTypeDto> getAttributeRisk(JSONArray attributes){
