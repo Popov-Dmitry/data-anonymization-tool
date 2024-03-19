@@ -3,7 +3,7 @@
   @apply rounded-16px shadow-evaluation-2;
   @apply bg-surface+3;
   @apply px-16px py-12px mb-8px;
-  @apply h-[calc(100vh_-_120px)];
+  @apply h-[calc(100vh_-_120px)] box-border;
   @apply overflow-y-scroll;
   @apply sticky top-80px;
   -ms-overflow-style: none;
@@ -14,7 +14,7 @@
   }
 
   &__container {
-    @apply min-h-[calc(100%_-_56px)];
+    @apply min-h-[calc(100%_-_56px)] box-border;
   }
 
   &-title {
